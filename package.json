@@ -1,0 +1,42 @@
+{
+  "name": "later",
+  "private": true,
+  "license": "MIT",
+  "scripts": {
+    "prepare": "vp config --no-agent",
+    "build": "vp run -r --cache build",
+    "dev": "vp run -r --parallel dev",
+    "check": "vp check && pnpm check:changesets && pnpm check:version",
+    "lint": "vp lint",
+    "format": "vp fmt",
+    "format:check": "vp fmt --check",
+    "typecheck": "vp run -r --cache typecheck",
+    "test": "vp run --cache --filter './packages/**' test",
+    "test:visual": "sh scripts/test-visual.sh",
+    "test:visual:update": "sh scripts/test-visual.sh --update",
+    "changeset": "changeset",
+    "version-packages": "changeset version && node scripts/sync-version.js && pnpm build:integration",
+    "release:notes": "node packages/tooling/release-notes/cli.js packages/later-card/CHANGELOG.md",
+    "build:card": "vp run --cache --filter later-card build",
+    "build:integration": "pnpm --filter later-card build:integration",
+    "start:hass": "pnpm build:card && docker compose -f compose.hass.yaml up",
+    "hass:up": "pnpm build:card && docker compose -f compose.hass.yaml up -d && pnpm hass:bootstrap",
+    "hass:bootstrap": "vpx ./e2e/scripts/bootstrap.ts",
+    "hass:down": "docker compose -f compose.hass.yaml down",
+    "hass:logs": "docker compose -f compose.hass.yaml logs -f",
+    "hass:restart": "docker compose -f compose.hass.yaml restart",
+    "hass:reset": "docker compose -f compose.hass.yaml down && git clean -fdX .hass_dev",
+    "e2e": "pnpm --filter @later/e2e e2e",
+    "check:changesets": "node packages/tooling/release-notes/check-changesets.js",
+    "check:version": "node scripts/sync-version.js --check"
+  },
+  "devDependencies": {
+    "@changesets/cli": "catalog:packages",
+    "@later/release-notes": "workspace:*",
+    "vite-plus": "catalog:packages"
+  },
+  "packageManager": "pnpm@11.5.0+sha512.dbfcc4f81cf48597afd4bc391ffdf12c11f1a9fb83a395bfa6b0a2d9cc2fd8ffebafdb1ccbd529632153f793904c2615b7f09fe1a345473fd1c35845172a8eb1",
+  "engines": {
+    "node": ">=22.18.0"
+  }
+}

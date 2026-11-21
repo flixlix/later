@@ -1,0 +1,10 @@
+{
+  "extends": "./packages/tooling/typescript-config/base.json",
+  "compilerOptions": {
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "noEmit": true,
+    "types": []
+  },
+  "include": ["vite.config.ts", "scripts"]
+}

@@ -1,0 +1,87 @@
+# Python tooling for the Home Assistant integration in custom_components/later.
+# Not a package: `uv sync` installs the pinned dev tools from uv.lock.
+[project]
+name = "later"
+version = "0.0.0"
+description = "One-off scheduled actions for Home Assistant"
+license = "MIT"
+requires-python = ">=3.14.2"
+dependencies = []
+
+[dependency-groups]
+# Pins homeassistant, pytest and pytest-asyncio to the versions it was built against.
+test = [
+  "pytest-homeassistant-custom-component==0.13.375",
+  # Needed by frontend, a dependency of later; the version that homeassistant pins.
+  "home-assistant-frontend==20260930.5",
+]
+lint = ["ruff==0.17.6"]
+
+[tool.uv]
+package = false
+default-groups = ["test", "lint"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+
+[tool.ruff]
+line-length = 88
+target-version = "py314"
+extend-exclude = ["node_modules", ".hass_dev"]
+
+[tool.ruff.lint]
+# A subset of Home Assistant core's rule set that applies to a small custom integration.
+select = [
+  "A", # builtins shadowing
+  "ASYNC", # blocking calls in async code
+  "B", # bugbear
+  "BLE", # blind except
+  "C4", # comprehensions
+  "D", # docstrings
+  "DTZ", # naive datetimes
+  "E", # pycodestyle
+  "F", # pyflakes
+  "FLY",
+  "G", # logging format
+  "I", # isort
+  "LOG",
+  "N", # naming
+  "PERF",
+  "PGH",
+  "PIE",
+  "PL", # pylint
+  "PT", # pytest style
+  "RET",
+  "RSE",
+  "RUF",
+  "S", # bandit
+  "SIM",
+  "SLF", # private member access
+  "T20", # print
+  "TID",
+  "TRY",
+  "UP", # pyupgrade
+  "W",
+]
+ignore = [
+  "D202", # blank line after function docstring (conflicts with format)
+  "D203", # one blank line before class (conflicts with D211)
+  "D213", # multi-line summary on second line (conflicts with D212)
+  "E501", # line length: the formatter handles it
+  "PLR0913", # too many arguments
+  "TRY003", # long messages in exceptions
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["S101", "SLF001", "PLR2004", "D103"]
+
+[tool.ruff.lint.isort]
+force-sort-within-sections = true
+known-first-party = ["custom_components.later"]
+combine-as-imports = true
+split-on-trailing-comma = false
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"

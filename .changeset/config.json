@@ -1,0 +1,15 @@
+{
+  "$schema": "https://unpkg.com/@changesets/config@2.0.0/schema.json",
+  "changelog": [
+    "@later/release-notes/changelog",
+    { "repo": "flixlix/later", "maintainers": ["flixlix"] }
+  ],
+  "baseBranch": "main",
+  "commit": false,
+  "fixed": [],
+  "linked": [],
+  "access": "restricted",
+  "updateInternalDependencies": "patch",
+  "privatePackages": { "version": true, "tag": false },
+  "ignore": []
+}

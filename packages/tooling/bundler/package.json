@@ -1,0 +1,27 @@
+{
+  "name": "@later/bundler",
+  "version": "0.0.0",
+  "private": true,
+  "license": "MIT",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "default": "./index.js"
+    }
+  },
+  "scripts": {
+    "test": "vp test run"
+  },
+  "dependencies": {
+    "acorn": "catalog:packages",
+    "rollup-plugin-minify-html-literals": "catalog:packages"
+  },
+  "devDependencies": {
+    "esm-env": "catalog:packages",
+    "vite-plus": "catalog:packages"
+  },
+  "peerDependencies": {
+    "vite-plus": "catalog:packages"
+  }
+}

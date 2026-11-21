@@ -1,0 +1,57 @@
+{
+  "name": "later-card",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "description": "Lovelace card for Later: one-off scheduled actions in Home Assistant",
+  "keywords": [
+    "home-assistant",
+    "homeassistant",
+    "hass",
+    "lovelace",
+    "custom-cards",
+    "schedule",
+    "timer"
+  ],
+  "main": "./dist/later-card.js",
+  "exports": {
+    ".": "./dist/later-card.js",
+    "./source": "./src/later-card.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/flixlix/later.git"
+  },
+  "author": "flixlix",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/flixlix/later/issues"
+  },
+  "homepage": "https://github.com/flixlix/later#readme",
+  "scripts": {
+    "build": "vp build",
+    "build:integration": "RELEASE_BUILD=true vp build && cp dist/later-card.js ../../custom_components/later/www/later-card.js",
+    "dev": "vp build --watch",
+    "typecheck": "tsc --noEmit",
+    "test": "vp test run --coverage",
+    "test:watch": "vp test"
+  },
+  "dependencies": {
+    "@later/shared": "workspace:*",
+    "@mdi/js": "catalog:packages",
+    "custom-card-helpers": "catalog:packages",
+    "home-assistant-js-websocket": "catalog:packages",
+    "lit": "catalog:packages",
+    "superstruct": "catalog:packages"
+  },
+  "devDependencies": {
+    "@later/bundler": "workspace:*",
+    "@later/testing": "workspace:*",
+    "@later/typescript-config": "workspace:*",
+    "@types/node": "catalog:",
+    "@vitest/browser-playwright": "catalog:packages",
+    "playwright": "catalog:packages",
+    "typescript": "catalog:",
+    "vite-plus": "catalog:packages"
+  }
+}

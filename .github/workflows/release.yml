@@ -1,0 +1,59 @@
+name: Release
+
+# Changesets on main open (or update) a "Version packages" PR. Merging it bumps later-card and the
+# integration manifest to the same version and commits the release build of the card to
+# custom_components/later/www/. The push of that merge tags v<version> and publishes a GitHub
+# release, which is what HACS installs.
+on:
+  push:
+    branches: [main]
+
+concurrency: release
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+          cache: "pnpm"
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Open or update the version PR
+        id: changesets
+        uses: changesets/action@v1
+        with:
+          version: pnpm version-packages
+          commit: "chore: version packages"
+          title: "chore: version packages"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Tag and publish the release
+        if: steps.changesets.outputs.hasChangesets == 'false'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          version=$(node -p "require('./custom_components/later/manifest.json').version")
+          if [ "$version" = "0.0.0" ] || git rev-parse -q --verify "refs/tags/v$version" >/dev/null; then
+            echo "v$version needs no release"
+            exit 0
+          fi
+          pnpm --silent release:notes "$version" flixlix/later > release-notes.md
+          gh release create "v$version" --target "$GITHUB_SHA" --title "v$version" --notes-file release-notes.md

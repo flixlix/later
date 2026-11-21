@@ -1,0 +1,57 @@
+packages:
+  - "apps/*"
+  - "packages/*"
+  - "packages/tooling/*"
+  - "e2e"
+
+allowBuilds:
+  esbuild: false
+  msw: false
+  unrs-resolver: false
+
+catalog:
+  "@testing-library/dom": ^10.4.1
+  "@types/node": ^22.19.17
+  "@types/react": ^19.2.14
+  "@types/react-dom": ^19.2.3
+  jsdom: ^28.1.0
+  react: ^19.2.5
+  react-dom: ^19.2.5
+  tailwindcss: ^4.2.4
+  typescript: ^7.0.2
+
+catalogs:
+  packages:
+    "@changesets/cli": ^2.31.0
+    "@changesets/get-github-info": ^0.8.0
+    "@mdi/js": ^7.4.47
+    "@playwright/test": 1.64.1
+    "@vitest/browser-playwright": 5.1.0
+    "@vitest/coverage-v8": 5.1.0
+    acorn: ^8.16.0
+    custom-card-helpers: ^2.0.0
+    esm-env: ^1.2.2
+    home-assistant-js-websocket: ^9.8.1
+    lit: ^3.3.3
+    # Pinned exactly: the visual tests run in mcr.microsoft.com/playwright:v<this version>-noble.
+    playwright: 1.64.1
+    rollup-plugin-minify-html-literals: ^1.2.6
+    superstruct: ^2.0.2
+    vitest: 5.1.0
+    vite: npm:@voidzero-dev/vite-plus-core@1.5.0
+    vite-plus: 1.5.0
+overrides:
+  vite@*: catalog:packages
+  vitest@*: catalog:packages
+  # One @types/node and one playwright across the repo, so every package resolves the same
+  # vite-plus peer variant.
+  "@types/node": "catalog:"
+  playwright: catalog:packages
+  "@playwright/test": 1.64.1
+peerDependencyRules:
+  allowAny:
+    - vite
+    - vitest
+  allowedVersions:
+    vite: "*"
+    vitest: "*"

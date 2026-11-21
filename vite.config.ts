@@ -1,0 +1,145 @@
+import { defineConfig } from "vite-plus";
+
+export default defineConfig({
+  lint: {
+    plugins: ["oxc", "typescript", "unicorn", "import", "promise", "vitest"],
+    jsPlugins: [
+      { name: "vite-plus", specifier: "vite-plus/oxlint-plugin" },
+      "./packages/tooling/lint-rules/plugin.js",
+    ],
+    categories: {
+      correctness: "error",
+      suspicious: "error",
+      perf: "error",
+    },
+    env: { builtin: true, browser: true },
+    ignorePatterns: [
+      ".claude/**",
+      "**/dist/**",
+      "**/node_modules/**",
+      "**/.venv/**",
+      "custom_components/later/www/**",
+      "apps/web/src/routeTree.gen.ts",
+    ],
+    options: {
+      typeAware: true,
+      typeCheck: true,
+      reportUnusedDisableDirectives: "error",
+    },
+    rules: {
+      // Types
+      "typescript/no-explicit-any": "error",
+      "typescript/no-non-null-assertion": "error",
+      "typescript/ban-ts-comment": "error",
+      "typescript/consistent-type-imports": ["error", { fixStyle: "inline-type-imports" }],
+      "typescript/no-unsafe-assignment": "error",
+      "typescript/no-unsafe-member-access": "error",
+      "typescript/no-unsafe-call": "error",
+      "typescript/no-unsafe-return": "error",
+      "typescript/no-unsafe-argument": "error",
+      "typescript/no-unnecessary-type-assertion": "error",
+      "typescript/switch-exhaustiveness-check": "error",
+      "typescript/prefer-nullish-coalescing": "error",
+      "typescript/restrict-plus-operands": "error",
+      "typescript/restrict-template-expressions": "error",
+      // Promises
+      "typescript/no-floating-promises": "error",
+      "typescript/no-misused-promises": "error",
+      "typescript/await-thenable": "error",
+      // Errors: never swallow
+      "no-empty": "error",
+      "typescript/only-throw-error": "error",
+      "preserve-caught-error": "error",
+      // Clarity
+      eqeqeq: "error",
+      curly: "error",
+      "no-console": ["error", { allow: ["warn", "error"] }],
+      "no-var": "error",
+      "prefer-const": "error",
+      "no-unused-vars": "error",
+      "no-unused-expressions": "error",
+      "no-useless-assignment": "error",
+      "import/no-cycle": "error",
+      "import/no-duplicates": "error",
+      "unicorn/filename-case": ["error", { case: "kebabCase" }],
+      "no-underscore-dangle": "off",
+      complexity: ["error", { max: 20 }],
+      "later/cognitive-complexity": ["error", { max: 15 }],
+      // Home Assistant frontend guards
+      "later/no-camelcase-event-binding": "error",
+      "later/no-mwc-elements": "error",
+      "later/no-native-date-input": "error",
+      "vite-plus/prefer-vite-plus-imports": "error",
+    },
+    overrides: [
+      {
+        files: ["**/*.test.ts", "**/*.test.js", "packages/shared/src/testing/**"],
+        rules: {
+          "typescript/no-non-null-assertion": "off",
+          "typescript/no-unsafe-member-access": "off",
+          "typescript/no-unsafe-assignment": "off",
+          "typescript/no-unsafe-call": "off",
+          "typescript/no-unsafe-type-assertion": "off",
+          "vitest/require-mock-type-parameters": "off",
+          "vitest/no-disabled-tests": "error",
+          "vitest/no-focused-tests": "error",
+          "vitest/valid-expect": ["error", { maxArgs: 2 }],
+        },
+      },
+      {
+        // Shipped in the card bundle, which targets older browsers than apps/web.
+        files: ["packages/shared/src/**", "packages/later-card/src/**"],
+        excludeFiles: ["**/*.test.ts", "packages/shared/src/testing/**"],
+        rules: { "later/no-unsupported-runtime-apis": "error" },
+      },
+      {
+        files: ["apps/web/**"],
+        plugins: ["react", "jsx-a11y"],
+        rules: { "unicorn/filename-case": "off", "react/react-in-jsx-scope": "off" },
+      },
+      {
+        files: ["**/*.js", "**/*.mjs"],
+        rules: {
+          "typescript/no-unsafe-member-access": "off",
+          "typescript/no-unsafe-assignment": "off",
+          "typescript/no-unsafe-call": "off",
+          "typescript/no-unsafe-argument": "off",
+          "typescript/no-unsafe-return": "off",
+        },
+      },
+      {
+        // links people follow to install; the rule's own tests hold bad links on purpose
+        files: ["**/*"],
+        excludeFiles: ["packages/tooling/lint-rules/**"],
+        rules: { "later/hacs-link-category": "error" },
+      },
+      {
+        files: ["packages/shared/src/utils/logging.ts"],
+        rules: { "no-console": "off" },
+      },
+    ],
+  },
+  fmt: {
+    semi: true,
+    singleQuote: false,
+    printWidth: 100,
+    tabWidth: 2,
+    trailingComma: "es5",
+    arrowParens: "always",
+    sortPackageJson: false,
+    ignorePatterns: [
+      ".claude",
+      "**/dist",
+      "**/node_modules",
+      "**/.venv",
+      ".pnpm-store",
+      "*.log",
+      ".output",
+      "routeTree.gen.ts",
+      "custom_components/later/www",
+      "pnpm-lock.yaml",
+      "uv.lock",
+      "CHANGELOG.md",
+    ],
+  },
+});

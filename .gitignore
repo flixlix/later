@@ -1,0 +1,44 @@
+.DS_Store
+node_modules
+*.log
+dist
+dist-ssr
+*.local
+.env
+.env.local
+.cache
+coverage/
+.tsbuildinfo
+
+## editors
+/.idea
+/.vscode
+
+## python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.ruff_cache/
+.coverage
+
+# hass dev: only the committed config; everything Home Assistant generates stays ignored
+.hass_dev/*
+!.hass_dev/configuration.yaml
+!.hass_dev/lovelace.yaml
+!.hass_dev/dashboards
+!.hass_dev/packages
+
+# playwright
+/e2e/.auth/
+/e2e/test-results/
+/e2e/playwright-report/
+
+## browser tests
+.vitest/
+# Screenshot baselines come from the Playwright Docker image only (`pnpm test:visual`).
+**/__screenshots__/**/*-darwin.png
+**/__screenshots__/**/*-win32.png
+
+# Claude Code worktrees
+.claude/worktrees/

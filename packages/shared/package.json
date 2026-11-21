@@ -1,0 +1,34 @@
+{
+  "name": "@later/shared",
+  "version": "0.0.0",
+  "private": true,
+  "license": "MIT",
+  "type": "module",
+  "exports": {
+    "./utils/*": "./src/utils/*.ts",
+    "./ui-editor/*": "./src/ui-editor/*.ts",
+    "./testing/*": "./src/testing/*.ts"
+  },
+  "peerDependencies": {
+    "custom-card-helpers": "catalog:packages",
+    "home-assistant-js-websocket": "catalog:packages",
+    "lit": "catalog:packages"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "vp test run"
+  },
+  "dependencies": {
+    "@mdi/js": "catalog:packages"
+  },
+  "devDependencies": {
+    "@later/testing": "workspace:*",
+    "@later/typescript-config": "workspace:*",
+    "@types/node": "catalog:",
+    "custom-card-helpers": "catalog:packages",
+    "home-assistant-js-websocket": "catalog:packages",
+    "lit": "catalog:packages",
+    "typescript": "catalog:",
+    "vite-plus": "catalog:packages"
+  }
+}
