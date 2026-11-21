@@ -1,0 +1,89 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Later",
+        "description": "Ajasta kertaluonteisia toimintoja, jotka suoritetaan kerran ja poistetaan sitten automaattisesti."
+      }
+    },
+    "abort": {
+      "single_instance_allowed": "Later on jo määritetty."
+    }
+  },
+  "exceptions": {
+    "not_loaded": {
+      "message": "Lateria ei ole määritetty. Lisää se kohdassa Asetukset > Laitteet & palvelut."
+    },
+    "not_found": {
+      "message": "Odottavaa ajastusta tunnuksella {id} ei löytynyt."
+    },
+    "action_needs_entity": {
+      "message": "Pikatoiminto (laita päälle, sammuta, vaihda) vaatii entiteetin."
+    }
+  },
+  "selector": {
+    "action": {
+      "options": {
+        "turn_on": "Laita päälle",
+        "turn_off": "Sammuta",
+        "toggle": "Vaihda"
+      }
+    }
+  },
+  "services": {
+    "add": {
+      "name": "Lisää",
+      "description": "Suorittaa toiminnon kerran tiettynä aikana ja poistaa sitten ajastuksen. Anna joko `at` tai `in` sekä joko `action` tai `service`.",
+      "fields": {
+        "entity_id": {
+          "name": "Entiteetti",
+          "description": "Kohde-entiteetti. Pakollinen, kun käytetään `action`."
+        },
+        "action": {
+          "name": "Toiminto",
+          "description": "Pikavalinta entiteetin toimialueelle: turn_on, turn_off tai toggle."
+        },
+        "service": {
+          "name": "Palvelu",
+          "description": "Mikä tahansa kutsuttava palvelu muodossa domain.service."
+        },
+        "data": {
+          "name": "Tiedot",
+          "description": "Palvelun tiedot."
+        },
+        "at": {
+          "name": "Klo",
+          "description": "Kellonaika (20:00: tänään, tai huomenna, jos se on jo mennyt) tai päivämäärä ja aika Home Assistantin aikavyöhykkeellä."
+        },
+        "in": {
+          "name": "Kuluttua",
+          "description": "Minuutteja tästä hetkestä."
+        },
+        "name": {
+          "name": "Nimi",
+          "description": "Näytetään kortissa ja aktiviteetissa. Muodostetaan entiteetistä, toiminnosta ja ajasta, jos jätetään tyhjäksi."
+        }
+      }
+    },
+    "cancel": {
+      "name": "Peruuta",
+      "description": "Poistaa odottavan ajastuksen suorittamatta sitä.",
+      "fields": {
+        "id": {
+          "name": "ID",
+          "description": "Ajastuksen tunnus."
+        }
+      }
+    },
+    "run_now": {
+      "name": "Suorita nyt",
+      "description": "Suorittaa odottavan ajastuksen nyt ja poistaa sen sitten.",
+      "fields": {
+        "id": {
+          "name": "ID",
+          "description": "Ajastuksen tunnus."
+        }
+      }
+    }
+  }
+}

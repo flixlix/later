@@ -1,0 +1,60 @@
+{
+  "card": {
+    "title": "Later",
+    "loading": "Ladataan…",
+    "nothing_scheduled": "Ei ajastuksia",
+    "schedule_action": "Ajasta toiminto",
+    "edit_schedule": "Muokkaa ajastusta",
+    "edit": "Muokkaa",
+    "edit_named": "Muokkaa: {name}",
+    "cancel": "Peruuta",
+    "cancel_named": "Peruuta: {name}",
+    "could_not_schedule": "Toimintoa ei voitu ajastaa",
+    "could_not_save": "Kohdetta {name} ei voitu tallentaa",
+    "load_failed": "Later ei voinut ladata ajastuksiaan: {error}",
+    "not_installed": "Later-integraatiota ei ole asennettu. Tämä kortti toimii vain sen kanssa. Avaa HACSissa Integraatiot, lisää Later, käynnistä Home Assistant uudelleen ja lisää sitten Later kohdassa Asetukset → Laitteet & palvelut.",
+    "open_in_hacs": "Avaa Later HACSissa",
+    "not_set_up": "Later-integraatio on asennettu, mutta sitä ei ole määritetty. Lisää se kohdassa Asetukset → Laitteet & palvelut → Lisää integraatio → Later."
+  },
+  "form": {
+    "entity": "Entiteetti",
+    "action": "Toiminto",
+    "service": "Palvelu",
+    "other_service": "Muu palvelu",
+    "data": "Palvelun tiedot",
+    "when": "Milloin",
+    "in": "{duration} päästä",
+    "custom": "Mukautettu",
+    "date_time": "Päivämäärä ja aika",
+    "minutes": "Minuutit",
+    "date": "Päivämäärä",
+    "time": "Aika",
+    "name": "Nimi (valinnainen)",
+    "runs": "Suoritetaan {when}, {relative}",
+    "passed": "Aika on jo mennyt",
+    "save": "Tallenna",
+    "schedule": "Ajasta",
+    "cancel": "Peruuta"
+  },
+  "action": {
+    "turn_on": "Laita päälle",
+    "turn_off": "Sammuta",
+    "toggle": "Vaihda"
+  },
+  "error": {
+    "pick_action": "Valitse toiminto",
+    "pick_entity": "Valitse entiteetti",
+    "pick_service": "Valitse palvelu",
+    "pick_when": "Valitse milloin",
+    "whole_minutes": "Minuuttien on oltava kokonaisluku, joka on suurempi kuin 0",
+    "pick_date_time": "Valitse päivämäärä ja aika",
+    "in_the_past": "Valitse tuleva aika"
+  },
+  "time": {
+    "in": "{duration} päästä"
+  },
+  "editor": {
+    "title": "Otsikko",
+    "entity": "Oletusentiteetti (esivalittu ajastettaessa)"
+  }
+}

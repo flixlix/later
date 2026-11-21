@@ -1,0 +1,89 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Later",
+        "description": "Schemalägg engångsåtgärder som körs en gång och sedan tar bort sig själva."
+      }
+    },
+    "abort": {
+      "single_instance_allowed": "Later är redan konfigurerad."
+    }
+  },
+  "exceptions": {
+    "not_loaded": {
+      "message": "Later är inte konfigurerad. Lägg till den under Inställningar > Enheter och tjänster."
+    },
+    "not_found": {
+      "message": "Inget väntande schema med id {id}."
+    },
+    "action_needs_entity": {
+      "message": "En genvägsåtgärd (slå på, stäng av, växla) kräver en entitet."
+    }
+  },
+  "selector": {
+    "action": {
+      "options": {
+        "turn_on": "Slå på",
+        "turn_off": "Stäng av",
+        "toggle": "Växla"
+      }
+    }
+  },
+  "services": {
+    "add": {
+      "name": "Lägg till",
+      "description": "Kör en åtgärd en gång vid en viss tid och tar sedan bort schemat. Skicka antingen `at` eller `in`, och antingen `action` eller `service`.",
+      "fields": {
+        "entity_id": {
+          "name": "Entitet",
+          "description": "Målentitet. Krävs med `action`."
+        },
+        "action": {
+          "name": "Åtgärd",
+          "description": "Genväg för entitetens domän: turn_on, turn_off eller toggle."
+        },
+        "service": {
+          "name": "Tjänst",
+          "description": "Valfri tjänst att anropa, som domain.service."
+        },
+        "data": {
+          "name": "Data",
+          "description": "Tjänstdata."
+        },
+        "at": {
+          "name": "Vid",
+          "description": "Klockslag (20:00: i dag, eller i morgon om tiden har passerat) eller datum och tid, i Home Assistants tidszon."
+        },
+        "in": {
+          "name": "Om",
+          "description": "Minuter från nu."
+        },
+        "name": {
+          "name": "Namn",
+          "description": "Visas i kortet och under Aktivitet. Härleds från entitet, åtgärd och tid om det utelämnas."
+        }
+      }
+    },
+    "cancel": {
+      "name": "Avbryt",
+      "description": "Tar bort ett väntande schema utan att köra det.",
+      "fields": {
+        "id": {
+          "name": "ID",
+          "description": "Schemats ID."
+        }
+      }
+    },
+    "run_now": {
+      "name": "Kör nu",
+      "description": "Kör ett väntande schema nu och tar sedan bort det.",
+      "fields": {
+        "id": {
+          "name": "ID",
+          "description": "Schemats ID."
+        }
+      }
+    }
+  }
+}

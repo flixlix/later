@@ -1,0 +1,89 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Later",
+        "description": "Programa acciones puntuales que se ejecutan una vez y se eliminan solas."
+      }
+    },
+    "abort": {
+      "single_instance_allowed": "Later ya está configurado."
+    }
+  },
+  "exceptions": {
+    "not_loaded": {
+      "message": "Later no está configurado. Añádelo en Configuración > Dispositivos y servicios."
+    },
+    "not_found": {
+      "message": "No hay ninguna programación pendiente con el id {id}."
+    },
+    "action_needs_entity": {
+      "message": "Una acción rápida (encender, apagar, alternar) necesita una entidad."
+    }
+  },
+  "selector": {
+    "action": {
+      "options": {
+        "turn_on": "Encender",
+        "turn_off": "Apagar",
+        "toggle": "Alternar"
+      }
+    }
+  },
+  "services": {
+    "add": {
+      "name": "Añadir",
+      "description": "Ejecuta una acción una vez a una hora determinada y luego elimina la programación. Envía `at` o `in`, y `action` o `service`.",
+      "fields": {
+        "entity_id": {
+          "name": "Entidad",
+          "description": "Entidad de destino. Obligatoria con `action`."
+        },
+        "action": {
+          "name": "Acción",
+          "description": "Atajo para el dominio de la entidad: turn_on, turn_off o toggle."
+        },
+        "service": {
+          "name": "Servicio",
+          "description": "Cualquier servicio que llamar, como domain.service."
+        },
+        "data": {
+          "name": "Datos",
+          "description": "Datos del servicio."
+        },
+        "at": {
+          "name": "A las",
+          "description": "Hora (20:00: hoy, o mañana si ya ha pasado) o una fecha y hora, en la zona horaria de Home Assistant."
+        },
+        "in": {
+          "name": "En",
+          "description": "Minutos a partir de ahora."
+        },
+        "name": {
+          "name": "Nombre",
+          "description": "Se muestra en la tarjeta y en la actividad. Si se omite, se deriva de la entidad, la acción y la hora."
+        }
+      }
+    },
+    "cancel": {
+      "name": "Cancelar",
+      "description": "Elimina una programación pendiente sin ejecutarla.",
+      "fields": {
+        "id": {
+          "name": "ID",
+          "description": "ID de la programación."
+        }
+      }
+    },
+    "run_now": {
+      "name": "Ejecutar ahora",
+      "description": "Ejecuta ahora una programación pendiente y luego la elimina.",
+      "fields": {
+        "id": {
+          "name": "ID",
+          "description": "ID de la programación."
+        }
+      }
+    }
+  }
+}

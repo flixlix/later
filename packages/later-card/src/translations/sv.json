@@ -1,0 +1,60 @@
+{
+  "card": {
+    "title": "Later",
+    "loading": "Läser in…",
+    "nothing_scheduled": "Inget schemalagt",
+    "schedule_action": "Schemalägg en åtgärd",
+    "edit_schedule": "Redigera schema",
+    "edit": "Redigera",
+    "edit_named": "Redigera {name}",
+    "cancel": "Avbryt",
+    "cancel_named": "Avbryt {name}",
+    "could_not_schedule": "Kunde inte schemalägga åtgärden",
+    "could_not_save": "Kunde inte spara {name}",
+    "load_failed": "Later kunde inte läsa in sina scheman: {error}",
+    "not_installed": "Integrationen Later är inte installerad. Det här kortet fungerar bara med den. Öppna Integrationer i HACS, lägg till Later, starta om Home Assistant och lägg sedan till Later under Inställningar → Enheter och tjänster.",
+    "open_in_hacs": "Öppna Later i HACS",
+    "not_set_up": "Integrationen Later är installerad men inte konfigurerad. Lägg till den under Inställningar → Enheter och tjänster → Lägg till integration → Later."
+  },
+  "form": {
+    "entity": "Entitet",
+    "action": "Åtgärd",
+    "service": "Tjänst",
+    "other_service": "Annan tjänst",
+    "data": "Tjänstdata",
+    "when": "När",
+    "in": "Om {duration}",
+    "custom": "Anpassad",
+    "date_time": "Datum och tid",
+    "minutes": "Minuter",
+    "date": "Datum",
+    "time": "Tid",
+    "name": "Namn (valfritt)",
+    "runs": "Körs {when}, {relative}",
+    "passed": "Den tiden har redan passerat",
+    "save": "Spara",
+    "schedule": "Schemalägg",
+    "cancel": "Avbryt"
+  },
+  "action": {
+    "turn_on": "Slå på",
+    "turn_off": "Stäng av",
+    "toggle": "Växla"
+  },
+  "error": {
+    "pick_action": "Välj en åtgärd",
+    "pick_entity": "Välj en entitet",
+    "pick_service": "Välj en tjänst",
+    "pick_when": "Välj när",
+    "whole_minutes": "Minuter måste vara ett heltal större än 0",
+    "pick_date_time": "Välj datum och tid",
+    "in_the_past": "Välj en tid i framtiden"
+  },
+  "time": {
+    "in": "om {duration}"
+  },
+  "editor": {
+    "title": "Rubrik",
+    "entity": "Standardentitet (förvald vid schemaläggning)"
+  }
+}

@@ -1,0 +1,60 @@
+{
+  "card": {
+    "title": "Later",
+    "loading": "Caricamento…",
+    "nothing_scheduled": "Niente in programma",
+    "schedule_action": "Programma un'azione",
+    "edit_schedule": "Modifica programmazione",
+    "edit": "Modifica",
+    "edit_named": "Modifica {name}",
+    "cancel": "Annulla",
+    "cancel_named": "Annulla {name}",
+    "could_not_schedule": "Impossibile programmare questa azione",
+    "could_not_save": "Impossibile salvare {name}",
+    "load_failed": "Later non è riuscito a caricare le programmazioni: {error}",
+    "not_installed": "L'integrazione Later non è installata. Questa scheda funziona solo con essa. In HACS, apri Integrazioni, aggiungi Later, riavvia Home Assistant, poi aggiungi Later in Impostazioni → Dispositivi e servizi.",
+    "open_in_hacs": "Apri Later in HACS",
+    "not_set_up": "L'integrazione Later è installata ma non configurata. Aggiungila in Impostazioni → Dispositivi e servizi → Aggiungi integrazione → Later."
+  },
+  "form": {
+    "entity": "Entità",
+    "action": "Azione",
+    "service": "Servizio",
+    "other_service": "Altro servizio",
+    "data": "Dati del servizio",
+    "when": "Quando",
+    "in": "Tra {duration}",
+    "custom": "Personalizzato",
+    "date_time": "Data e ora",
+    "minutes": "Minuti",
+    "date": "Data",
+    "time": "Ora",
+    "name": "Nome (opzionale)",
+    "runs": "Viene eseguito {when}, {relative}",
+    "passed": "Quell'orario è già passato",
+    "save": "Salva",
+    "schedule": "Programma",
+    "cancel": "Annulla"
+  },
+  "action": {
+    "turn_on": "Accendi",
+    "turn_off": "Spegni",
+    "toggle": "Commuta"
+  },
+  "error": {
+    "pick_action": "Scegli un'azione",
+    "pick_entity": "Scegli un'entità",
+    "pick_service": "Scegli un servizio",
+    "pick_when": "Scegli quando",
+    "whole_minutes": "I minuti devono essere un numero intero maggiore di 0",
+    "pick_date_time": "Scegli una data e un'ora",
+    "in_the_past": "Scegli un orario nel futuro"
+  },
+  "time": {
+    "in": "tra {duration}"
+  },
+  "editor": {
+    "title": "Titolo",
+    "entity": "Entità predefinita (preselezionata durante la programmazione)"
+  }
+}

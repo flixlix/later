@@ -67,13 +67,14 @@ export default defineConfig({
       "later/cognitive-complexity": ["error", { max: 15 }],
       // Home Assistant frontend guards
       "later/no-camelcase-event-binding": "error",
+      "later/no-instanceof-custom-event": "error",
       "later/no-mwc-elements": "error",
       "later/no-native-date-input": "error",
       "vite-plus/prefer-vite-plus-imports": "error",
     },
     overrides: [
       {
-        files: ["**/*.test.ts", "**/*.test.js", "packages/shared/src/testing/**"],
+        files: ["**/*.test.ts", "**/*.test.js", "packages/*/src/testing/**"],
         rules: {
           "typescript/no-non-null-assertion": "off",
           "typescript/no-unsafe-member-access": "off",
@@ -89,7 +90,7 @@ export default defineConfig({
       {
         // Shipped in the card bundle, which targets older browsers than apps/web.
         files: ["packages/shared/src/**", "packages/later-card/src/**"],
-        excludeFiles: ["**/*.test.ts", "packages/shared/src/testing/**"],
+        excludeFiles: ["**/*.test.ts", "packages/*/src/testing/**"],
         rules: { "later/no-unsupported-runtime-apis": "error" },
       },
       {

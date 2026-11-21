@@ -1,0 +1,89 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Later",
+        "description": "एक बार चलने वाले एक्शन शेड्यूल करें, जो चलने के बाद अपने आप हट जाते हैं।"
+      }
+    },
+    "abort": {
+      "single_instance_allowed": "Later पहले से सेट अप है।"
+    }
+  },
+  "exceptions": {
+    "not_loaded": {
+      "message": "Later सेट अप नहीं है। इसे सेटिंग्स > डिवाइस और सेवाएँ में जोड़ें।"
+    },
+    "not_found": {
+      "message": "id {id} वाला कोई लंबित शेड्यूल नहीं है।"
+    },
+    "action_needs_entity": {
+      "message": "शॉर्टकट एक्शन (चालू करें, बंद करें, टॉगल करें) के लिए एंटिटी ज़रूरी है।"
+    }
+  },
+  "selector": {
+    "action": {
+      "options": {
+        "turn_on": "चालू करें",
+        "turn_off": "बंद करें",
+        "toggle": "टॉगल करें"
+      }
+    }
+  },
+  "services": {
+    "add": {
+      "name": "जोड़ें",
+      "description": "किसी तय समय पर एक्शन को एक बार चलाता है, फिर शेड्यूल हटा देता है। `at` या `in` में से एक, और `action` या `service` में से एक भेजें।",
+      "fields": {
+        "entity_id": {
+          "name": "एंटिटी",
+          "description": "लक्ष्य एंटिटी। `action` के साथ ज़रूरी।"
+        },
+        "action": {
+          "name": "एक्शन",
+          "description": "एंटिटी के डोमेन के लिए शॉर्टकट: turn_on, turn_off या toggle।"
+        },
+        "service": {
+          "name": "सेवा",
+          "description": "कॉल करने के लिए कोई भी सेवा, domain.service के रूप में।"
+        },
+        "data": {
+          "name": "डेटा",
+          "description": "सेवा डेटा।"
+        },
+        "at": {
+          "name": "समय पर",
+          "description": "घड़ी का समय (20:00: आज, या बीत जाने पर कल) या तारीख और समय, Home Assistant के समय क्षेत्र में।"
+        },
+        "in": {
+          "name": "इतने मिनट में",
+          "description": "अभी से कितने मिनट बाद।"
+        },
+        "name": {
+          "name": "नाम",
+          "description": "कार्ड और लॉगबुक में दिखाया जाता है। न देने पर एंटिटी, एक्शन और समय से बनाया जाता है।"
+        }
+      }
+    },
+    "cancel": {
+      "name": "रद्द करें",
+      "description": "लंबित शेड्यूल को चलाए बिना हटा देता है।",
+      "fields": {
+        "id": {
+          "name": "ID",
+          "description": "शेड्यूल की ID।"
+        }
+      }
+    },
+    "run_now": {
+      "name": "अभी चलाएँ",
+      "description": "लंबित शेड्यूल को अभी चलाता है, फिर उसे हटा देता है।",
+      "fields": {
+        "id": {
+          "name": "ID",
+          "description": "शेड्यूल की ID।"
+        }
+      }
+    }
+  }
+}

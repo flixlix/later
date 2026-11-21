@@ -1,0 +1,9 @@
+mode: storage
+# No resources: the later integration loads the card on every dashboard itself.
+dashboards:
+  later-dev:
+    mode: yaml
+    title: Later
+    icon: mdi:timer-outline
+    show_in_sidebar: true
+    filename: dashboards/later.yaml

@@ -1,0 +1,60 @@
+{
+  "card": {
+    "title": "Later",
+    "loading": "Carregando…",
+    "nothing_scheduled": "Nada agendado",
+    "schedule_action": "Agendar uma ação",
+    "edit_schedule": "Editar agendamento",
+    "edit": "Editar",
+    "edit_named": "Editar {name}",
+    "cancel": "Cancelar",
+    "cancel_named": "Cancelar {name}",
+    "could_not_schedule": "Não foi possível agendar esta ação",
+    "could_not_save": "Não foi possível salvar {name}",
+    "load_failed": "O Later não conseguiu carregar seus agendamentos: {error}",
+    "not_installed": "A integração Later não está instalada. Este cartão só funciona com ela. No HACS, abra Integrações, adicione o Later, reinicie o Home Assistant e depois adicione o Later em Configurações → Dispositivos & serviços.",
+    "open_in_hacs": "Abrir o Later no HACS",
+    "not_set_up": "A integração Later está instalada, mas não configurada. Adicione-a em Configurações → Dispositivos & serviços → Adicionar integração → Later."
+  },
+  "form": {
+    "entity": "Entidade",
+    "action": "Ação",
+    "service": "Serviço",
+    "other_service": "Outro serviço",
+    "data": "Dados do serviço",
+    "when": "Quando",
+    "in": "Em {duration}",
+    "custom": "Personalizado",
+    "date_time": "Data e hora",
+    "minutes": "Minutos",
+    "date": "Data",
+    "time": "Hora",
+    "name": "Nome (opcional)",
+    "runs": "Executa {when}, {relative}",
+    "passed": "Esse horário já passou",
+    "save": "Salvar",
+    "schedule": "Agendar",
+    "cancel": "Cancelar"
+  },
+  "action": {
+    "turn_on": "Ligar",
+    "turn_off": "Desligar",
+    "toggle": "Alternar"
+  },
+  "error": {
+    "pick_action": "Escolha uma ação",
+    "pick_entity": "Escolha uma entidade",
+    "pick_service": "Escolha um serviço",
+    "pick_when": "Escolha quando",
+    "whole_minutes": "Os minutos devem ser um número inteiro maior que 0",
+    "pick_date_time": "Escolha uma data e hora",
+    "in_the_past": "Escolha um horário no futuro"
+  },
+  "time": {
+    "in": "em {duration}"
+  },
+  "editor": {
+    "title": "Título",
+    "entity": "Entidade padrão (pré-selecionada ao agendar)"
+  }
+}

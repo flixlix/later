@@ -1,0 +1,89 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Later",
+        "description": "Plane einmalige Aktionen, die einmal ausgeführt werden und sich dann selbst löschen."
+      }
+    },
+    "abort": {
+      "single_instance_allowed": "Later ist bereits eingerichtet."
+    }
+  },
+  "exceptions": {
+    "not_loaded": {
+      "message": "Later ist nicht eingerichtet. Füge es unter Einstellungen > Geräte & Dienste hinzu."
+    },
+    "not_found": {
+      "message": "Kein ausstehender Zeitplan mit der ID {id}."
+    },
+    "action_needs_entity": {
+      "message": "Eine Kurzaktion (einschalten, ausschalten, umschalten) benötigt eine Entität."
+    }
+  },
+  "selector": {
+    "action": {
+      "options": {
+        "turn_on": "Einschalten",
+        "turn_off": "Ausschalten",
+        "toggle": "Umschalten"
+      }
+    }
+  },
+  "services": {
+    "add": {
+      "name": "Hinzufügen",
+      "description": "Führt eine Aktion einmalig zu einem Zeitpunkt aus und löscht dann den Zeitplan. Sende entweder `at` oder `in` und entweder `action` oder `service`.",
+      "fields": {
+        "entity_id": {
+          "name": "Entität",
+          "description": "Ziel-Entität. Erforderlich mit `action`."
+        },
+        "action": {
+          "name": "Aktion",
+          "description": "Kurzbefehl für die Domain der Entität: turn_on, turn_off oder toggle."
+        },
+        "service": {
+          "name": "Dienst",
+          "description": "Beliebiger aufzurufender Dienst, als domain.service."
+        },
+        "data": {
+          "name": "Daten",
+          "description": "Dienstdaten."
+        },
+        "at": {
+          "name": "Um",
+          "description": "Uhrzeit (20:00: heute, oder morgen, wenn sie schon vorbei ist) oder ein Datum mit Uhrzeit, in der Zeitzone von Home Assistant."
+        },
+        "in": {
+          "name": "In",
+          "description": "Minuten ab jetzt."
+        },
+        "name": {
+          "name": "Name",
+          "description": "Wird in der Karte und in der Aktivität angezeigt. Wird aus Entität, Aktion und Uhrzeit abgeleitet, wenn leer gelassen."
+        }
+      }
+    },
+    "cancel": {
+      "name": "Abbrechen",
+      "description": "Löscht einen ausstehenden Zeitplan, ohne ihn auszuführen.",
+      "fields": {
+        "id": {
+          "name": "ID",
+          "description": "ID des Zeitplans."
+        }
+      }
+    },
+    "run_now": {
+      "name": "Jetzt ausführen",
+      "description": "Führt einen ausstehenden Zeitplan jetzt aus und löscht ihn dann.",
+      "fields": {
+        "id": {
+          "name": "ID",
+          "description": "ID des Zeitplans."
+        }
+      }
+    }
+  }
+}

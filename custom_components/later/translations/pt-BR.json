@@ -1,0 +1,89 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Later",
+        "description": "Agende ações únicas que são executadas uma vez e depois se excluem."
+      }
+    },
+    "abort": {
+      "single_instance_allowed": "O Later já está configurado."
+    }
+  },
+  "exceptions": {
+    "not_loaded": {
+      "message": "O Later não está configurado. Adicione-o em Configurações > Dispositivos & serviços."
+    },
+    "not_found": {
+      "message": "Nenhum agendamento pendente com id {id}."
+    },
+    "action_needs_entity": {
+      "message": "Uma ação de atalho (ligar, desligar, alternar) precisa de uma entidade."
+    }
+  },
+  "selector": {
+    "action": {
+      "options": {
+        "turn_on": "Ligar",
+        "turn_off": "Desligar",
+        "toggle": "Alternar"
+      }
+    }
+  },
+  "services": {
+    "add": {
+      "name": "Adicionar",
+      "description": "Executa uma ação uma única vez em um horário e depois exclui o agendamento. Envie `at` ou `in`, e `action` ou `service`.",
+      "fields": {
+        "entity_id": {
+          "name": "Entidade",
+          "description": "Entidade alvo. Obrigatória com `action`."
+        },
+        "action": {
+          "name": "Ação",
+          "description": "Atalho para o domínio da entidade: turn_on, turn_off ou toggle."
+        },
+        "service": {
+          "name": "Serviço",
+          "description": "Qualquer serviço a ser chamado, no formato domain.service."
+        },
+        "data": {
+          "name": "Dados",
+          "description": "Dados do serviço."
+        },
+        "at": {
+          "name": "Às",
+          "description": "Horário (20:00: hoje, ou amanhã se já tiver passado) ou uma data e hora, no fuso horário do Home Assistant."
+        },
+        "in": {
+          "name": "Em",
+          "description": "Minutos a partir de agora."
+        },
+        "name": {
+          "name": "Nome",
+          "description": "Exibido no cartão e no registro de atividades. Derivado da entidade, da ação e do horário quando omitido."
+        }
+      }
+    },
+    "cancel": {
+      "name": "Cancelar",
+      "description": "Exclui um agendamento pendente sem executá-lo.",
+      "fields": {
+        "id": {
+          "name": "ID",
+          "description": "ID do agendamento."
+        }
+      }
+    },
+    "run_now": {
+      "name": "Executar agora",
+      "description": "Executa agora um agendamento pendente e depois o exclui.",
+      "fields": {
+        "id": {
+          "name": "ID",
+          "description": "ID do agendamento."
+        }
+      }
+    }
+  }
+}

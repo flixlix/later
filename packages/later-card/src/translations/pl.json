@@ -1,0 +1,60 @@
+{
+  "card": {
+    "title": "Later",
+    "loading": "Wczytywanie…",
+    "nothing_scheduled": "Nic nie zaplanowano",
+    "schedule_action": "Zaplanuj akcję",
+    "edit_schedule": "Edytuj harmonogram",
+    "edit": "Edytuj",
+    "edit_named": "Edytuj {name}",
+    "cancel": "Anuluj",
+    "cancel_named": "Anuluj {name}",
+    "could_not_schedule": "Nie udało się zaplanować tej akcji",
+    "could_not_save": "Nie udało się zapisać {name}",
+    "load_failed": "Later nie mógł wczytać harmonogramów: {error}",
+    "not_installed": "Integracja Later nie jest zainstalowana. Ta karta działa tylko z nią. W HACS otwórz Integracje, dodaj Later, uruchom ponownie Home Assistant, a następnie dodaj Later w Ustawienia → Urządzenia oraz usługi.",
+    "open_in_hacs": "Otwórz Later w HACS",
+    "not_set_up": "Integracja Later jest zainstalowana, ale nie skonfigurowana. Dodaj ją w Ustawienia → Urządzenia oraz usługi → Dodaj integrację → Later."
+  },
+  "form": {
+    "entity": "Encja",
+    "action": "Akcja",
+    "service": "Usługa",
+    "other_service": "Inna usługa",
+    "data": "Dane usługi",
+    "when": "Kiedy",
+    "in": "Za {duration}",
+    "custom": "Niestandardowy",
+    "date_time": "Data i czas",
+    "minutes": "Minuty",
+    "date": "Data",
+    "time": "Czas",
+    "name": "Nazwa (opcjonalnie)",
+    "runs": "Uruchomi się {when}, {relative}",
+    "passed": "Ten czas już minął",
+    "save": "Zapisz",
+    "schedule": "Zaplanuj",
+    "cancel": "Anuluj"
+  },
+  "action": {
+    "turn_on": "Włącz",
+    "turn_off": "Wyłącz",
+    "toggle": "Przełącz"
+  },
+  "error": {
+    "pick_action": "Wybierz akcję",
+    "pick_entity": "Wybierz encję",
+    "pick_service": "Wybierz usługę",
+    "pick_when": "Wybierz kiedy",
+    "whole_minutes": "Liczba minut musi być liczbą całkowitą większą od 0",
+    "pick_date_time": "Wybierz datę i czas",
+    "in_the_past": "Wybierz czas w przyszłości"
+  },
+  "time": {
+    "in": "za {duration}"
+  },
+  "editor": {
+    "title": "Tytuł",
+    "entity": "Domyślna encja (wstępnie wybrana przy planowaniu)"
+  }
+}

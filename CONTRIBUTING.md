@@ -57,11 +57,26 @@ uv run ruff check . && uv run ruff format --check .
 uv run pytest
 ```
 
+Docs site (`apps/web`, TanStack Start; Vercel preset, meant for later.flixlix.com):
+
+```bash
+pnpm --filter @later/web dev    # http://localhost:3000
+pnpm --filter @later/web build
+```
+
 End to end, against `pnpm hass:up`:
 
 ```bash
 pnpm e2e
 ```
+
+## Translations
+
+The card's strings live in `packages/later-card/src/translations/<language>.json`, the integration's in `custom_components/later/strings.json` (English) and `custom_components/later/translations/<language>.json`, both named by Home Assistant language codes (`pt-BR`, `uk`). A new string goes into every file of its side; a new language gets a file on both sides and an import in `packages/later-card/src/localize.ts`. Tests fail on missing keys, lost placeholders or a language only one side has.
+
+## Logo
+
+`docs/brand/icon.svg` is the source. `pnpm brand` renders it to `custom_components/later/brand/icon.png` and `icon@2x.png`, which Home Assistant shows for the integration.
 
 ## The bundled card
 

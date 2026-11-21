@@ -1,0 +1,60 @@
+{
+  "card": {
+    "title": "Later",
+    "loading": "Wird geladen…",
+    "nothing_scheduled": "Nichts geplant",
+    "schedule_action": "Aktion planen",
+    "edit_schedule": "Zeitplan bearbeiten",
+    "edit": "Bearbeiten",
+    "edit_named": "{name} bearbeiten",
+    "cancel": "Abbrechen",
+    "cancel_named": "{name} abbrechen",
+    "could_not_schedule": "Diese Aktion konnte nicht geplant werden",
+    "could_not_save": "{name} konnte nicht gespeichert werden",
+    "load_failed": "Later konnte seine Zeitpläne nicht laden: {error}",
+    "not_installed": "Die Later-Integration ist nicht installiert. Diese Karte funktioniert nur damit. Öffne in HACS die Integrationen, füge Later hinzu, starte Home Assistant neu und füge Later dann unter Einstellungen → Geräte & Dienste hinzu.",
+    "open_in_hacs": "Later in HACS öffnen",
+    "not_set_up": "Die Later-Integration ist installiert, aber nicht eingerichtet. Füge sie unter Einstellungen → Geräte & Dienste → Integration hinzufügen → Later hinzu."
+  },
+  "form": {
+    "entity": "Entität",
+    "action": "Aktion",
+    "service": "Dienst",
+    "other_service": "Anderer Dienst",
+    "data": "Dienstdaten",
+    "when": "Wann",
+    "in": "In {duration}",
+    "custom": "Benutzerdefiniert",
+    "date_time": "Datum & Uhrzeit",
+    "minutes": "Minuten",
+    "date": "Datum",
+    "time": "Uhrzeit",
+    "name": "Name (optional)",
+    "runs": "Ausführung {when}, {relative}",
+    "passed": "Diese Uhrzeit ist bereits vorbei",
+    "save": "Speichern",
+    "schedule": "Planen",
+    "cancel": "Abbrechen"
+  },
+  "action": {
+    "turn_on": "Einschalten",
+    "turn_off": "Ausschalten",
+    "toggle": "Umschalten"
+  },
+  "error": {
+    "pick_action": "Wähle eine Aktion",
+    "pick_entity": "Wähle eine Entität",
+    "pick_service": "Wähle einen Dienst",
+    "pick_when": "Wähle einen Zeitpunkt",
+    "whole_minutes": "Minuten müssen eine ganze Zahl größer als 0 sein",
+    "pick_date_time": "Wähle Datum und Uhrzeit",
+    "in_the_past": "Wähle einen Zeitpunkt in der Zukunft"
+  },
+  "time": {
+    "in": "in {duration}"
+  },
+  "editor": {
+    "title": "Titel",
+    "entity": "Standard-Entität (beim Planen vorausgewählt)"
+  }
+}

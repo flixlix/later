@@ -1,0 +1,60 @@
+{
+  "card": {
+    "title": "Later",
+    "loading": "Cargando…",
+    "nothing_scheduled": "Nada programado",
+    "schedule_action": "Programar una acción",
+    "edit_schedule": "Editar programación",
+    "edit": "Editar",
+    "edit_named": "Editar {name}",
+    "cancel": "Cancelar",
+    "cancel_named": "Cancelar {name}",
+    "could_not_schedule": "No se pudo programar esta acción",
+    "could_not_save": "No se pudo guardar {name}",
+    "load_failed": "Later no pudo cargar sus programaciones: {error}",
+    "not_installed": "La integración Later no está instalada. Esta tarjeta solo funciona con ella. En HACS, abre Integraciones, añade Later, reinicia Home Assistant y luego añade Later en Configuración → Dispositivos y servicios.",
+    "open_in_hacs": "Abrir Later en HACS",
+    "not_set_up": "La integración Later está instalada pero no configurada. Añádela en Configuración → Dispositivos y servicios → Añadir integración → Later."
+  },
+  "form": {
+    "entity": "Entidad",
+    "action": "Acción",
+    "service": "Servicio",
+    "other_service": "Otro servicio",
+    "data": "Datos del servicio",
+    "when": "Cuándo",
+    "in": "En {duration}",
+    "custom": "Personalizado",
+    "date_time": "Fecha y hora",
+    "minutes": "Minutos",
+    "date": "Fecha",
+    "time": "Hora",
+    "name": "Nombre (opcional)",
+    "runs": "Se ejecuta {when}, {relative}",
+    "passed": "Esa hora ya ha pasado",
+    "save": "Guardar",
+    "schedule": "Programar",
+    "cancel": "Cancelar"
+  },
+  "action": {
+    "turn_on": "Encender",
+    "turn_off": "Apagar",
+    "toggle": "Alternar"
+  },
+  "error": {
+    "pick_action": "Elige una acción",
+    "pick_entity": "Elige una entidad",
+    "pick_service": "Elige un servicio",
+    "pick_when": "Elige cuándo",
+    "whole_minutes": "Los minutos deben ser un número entero mayor que 0",
+    "pick_date_time": "Elige una fecha y hora",
+    "in_the_past": "Elige una hora en el futuro"
+  },
+  "time": {
+    "in": "en {duration}"
+  },
+  "editor": {
+    "title": "Título",
+    "entity": "Entidad predeterminada (preseleccionada al programar)"
+  }
+}

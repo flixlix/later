@@ -1,0 +1,60 @@
+{
+  "card": {
+    "title": "Later",
+    "loading": "Indlæser…",
+    "nothing_scheduled": "Intet planlagt",
+    "schedule_action": "Planlæg en handling",
+    "edit_schedule": "Redigér plan",
+    "edit": "Redigér",
+    "edit_named": "Redigér {name}",
+    "cancel": "Annullér",
+    "cancel_named": "Annullér {name}",
+    "could_not_schedule": "Handlingen kunne ikke planlægges",
+    "could_not_save": "{name} kunne ikke gemmes",
+    "load_failed": "Later kunne ikke indlæse sine planer: {error}",
+    "not_installed": "Later-integrationen er ikke installeret. Dette kort virker kun med den. Åbn Integrationer i HACS, tilføj Later, genstart Home Assistant, og tilføj derefter Later under Indstillinger → Enheder & tjenester.",
+    "open_in_hacs": "Åbn Later i HACS",
+    "not_set_up": "Later-integrationen er installeret, men ikke sat op. Tilføj den under Indstillinger → Enheder & tjenester → Tilføj integration → Later."
+  },
+  "form": {
+    "entity": "Entitet",
+    "action": "Handling",
+    "service": "Tjeneste",
+    "other_service": "Anden tjeneste",
+    "data": "Tjenestedata",
+    "when": "Hvornår",
+    "in": "Om {duration}",
+    "custom": "Brugerdefineret",
+    "date_time": "Dato & tid",
+    "minutes": "Minutter",
+    "date": "Dato",
+    "time": "Tid",
+    "name": "Navn (valgfrit)",
+    "runs": "Kører {when}, {relative}",
+    "passed": "Det tidspunkt er passeret",
+    "save": "Gem",
+    "schedule": "Planlæg",
+    "cancel": "Annullér"
+  },
+  "action": {
+    "turn_on": "Tænd",
+    "turn_off": "Sluk",
+    "toggle": "Omskift"
+  },
+  "error": {
+    "pick_action": "Vælg en handling",
+    "pick_entity": "Vælg en entitet",
+    "pick_service": "Vælg en tjeneste",
+    "pick_when": "Vælg hvornår",
+    "whole_minutes": "Minutter skal være et helt tal over 0",
+    "pick_date_time": "Vælg en dato og et tidspunkt",
+    "in_the_past": "Vælg et tidspunkt i fremtiden"
+  },
+  "time": {
+    "in": "om {duration}"
+  },
+  "editor": {
+    "title": "Titel",
+    "entity": "Standardentitet (forvalgt ved planlægning)"
+  }
+}

@@ -1,0 +1,89 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Later",
+        "description": "Planuj jednorazowe akcje, które uruchamiają się raz i same się usuwają."
+      }
+    },
+    "abort": {
+      "single_instance_allowed": "Later jest już skonfigurowany."
+    }
+  },
+  "exceptions": {
+    "not_loaded": {
+      "message": "Later nie jest skonfigurowany. Dodaj go w Ustawienia > Urządzenia oraz usługi."
+    },
+    "not_found": {
+      "message": "Brak oczekującego harmonogramu o id {id}."
+    },
+    "action_needs_entity": {
+      "message": "Akcja skrótowa (włącz, wyłącz, przełącz) wymaga encji."
+    }
+  },
+  "selector": {
+    "action": {
+      "options": {
+        "turn_on": "Włącz",
+        "turn_off": "Wyłącz",
+        "toggle": "Przełącz"
+      }
+    }
+  },
+  "services": {
+    "add": {
+      "name": "Dodaj",
+      "description": "Uruchamia akcję jednorazowo o określonym czasie, a następnie usuwa harmonogram. Podaj `at` albo `in` oraz `action` albo `service`.",
+      "fields": {
+        "entity_id": {
+          "name": "Encja",
+          "description": "Encja docelowa. Wymagana z `action`."
+        },
+        "action": {
+          "name": "Akcja",
+          "description": "Skrót dla domeny encji: turn_on, turn_off lub toggle."
+        },
+        "service": {
+          "name": "Usługa",
+          "description": "Dowolna usługa do wywołania, w formacie domain.service."
+        },
+        "data": {
+          "name": "Dane",
+          "description": "Dane usługi."
+        },
+        "at": {
+          "name": "O",
+          "description": "Godzina (20:00: dziś lub jutro, jeśli już minęła) albo data i czas, w strefie czasowej Home Assistant."
+        },
+        "in": {
+          "name": "Za",
+          "description": "Minuty od teraz."
+        },
+        "name": {
+          "name": "Nazwa",
+          "description": "Wyświetlana na karcie i w dzienniku. Jeśli pominięta, tworzona z encji, akcji i czasu."
+        }
+      }
+    },
+    "cancel": {
+      "name": "Anuluj",
+      "description": "Usuwa oczekujący harmonogram bez uruchamiania go.",
+      "fields": {
+        "id": {
+          "name": "ID",
+          "description": "ID harmonogramu."
+        }
+      }
+    },
+    "run_now": {
+      "name": "Uruchom teraz",
+      "description": "Uruchamia teraz oczekujący harmonogram, a następnie go usuwa.",
+      "fields": {
+        "id": {
+          "name": "ID",
+          "description": "ID harmonogramu."
+        }
+      }
+    }
+  }
+}

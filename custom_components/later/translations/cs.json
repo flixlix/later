@@ -1,0 +1,89 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Later",
+        "description": "Naplánujte jednorázové akce, které se jednou spustí a samy se smažou."
+      }
+    },
+    "abort": {
+      "single_instance_allowed": "Later je již nastaven."
+    }
+  },
+  "exceptions": {
+    "not_loaded": {
+      "message": "Later není nastaven. Přidejte jej v Nastavení > Zařízení a služby."
+    },
+    "not_found": {
+      "message": "Žádný čekající plán s ID {id}."
+    },
+    "action_needs_entity": {
+      "message": "Zkratková akce (zapnout, vypnout, přepnout) vyžaduje entitu."
+    }
+  },
+  "selector": {
+    "action": {
+      "options": {
+        "turn_on": "Zapnout",
+        "turn_off": "Vypnout",
+        "toggle": "Přepnout"
+      }
+    }
+  },
+  "services": {
+    "add": {
+      "name": "Přidat",
+      "description": "Spustí akci jednou v daný čas a poté plán smaže. Zadejte buď `at`, nebo `in`, a buď `action`, nebo `service`.",
+      "fields": {
+        "entity_id": {
+          "name": "Entita",
+          "description": "Cílová entita. Povinná s `action`."
+        },
+        "action": {
+          "name": "Akce",
+          "description": "Zkratka pro doménu entity: turn_on, turn_off nebo toggle."
+        },
+        "service": {
+          "name": "Služba",
+          "description": "Libovolná služba k volání ve tvaru domain.service."
+        },
+        "data": {
+          "name": "Data",
+          "description": "Data služby."
+        },
+        "at": {
+          "name": "V",
+          "description": "Čas (20:00: dnes, nebo zítra, pokud již uplynul) nebo datum a čas, v časovém pásmu Home Assistanta."
+        },
+        "in": {
+          "name": "Za",
+          "description": "Minuty od teď."
+        },
+        "name": {
+          "name": "Název",
+          "description": "Zobrazuje se v kartě a v aktivitě. Pokud není zadán, odvodí se z entity, akce a času."
+        }
+      }
+    },
+    "cancel": {
+      "name": "Zrušit",
+      "description": "Smaže čekající plán, aniž by jej spustil.",
+      "fields": {
+        "id": {
+          "name": "ID",
+          "description": "ID plánu."
+        }
+      }
+    },
+    "run_now": {
+      "name": "Spustit nyní",
+      "description": "Spustí čekající plán nyní a poté jej smaže.",
+      "fields": {
+        "id": {
+          "name": "ID",
+          "description": "ID plánu."
+        }
+      }
+    }
+  }
+}

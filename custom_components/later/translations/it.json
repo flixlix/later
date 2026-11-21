@@ -1,0 +1,89 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Later",
+        "description": "Programma azioni singole che vengono eseguite una volta e poi si eliminano."
+      }
+    },
+    "abort": {
+      "single_instance_allowed": "Later è già configurato."
+    }
+  },
+  "exceptions": {
+    "not_loaded": {
+      "message": "Later non è configurato. Aggiungilo in Impostazioni > Dispositivi e servizi."
+    },
+    "not_found": {
+      "message": "Nessuna programmazione in attesa con id {id}."
+    },
+    "action_needs_entity": {
+      "message": "Un'azione rapida (accendi, spegni, commuta) richiede un'entità."
+    }
+  },
+  "selector": {
+    "action": {
+      "options": {
+        "turn_on": "Accendi",
+        "turn_off": "Spegni",
+        "toggle": "Commuta"
+      }
+    }
+  },
+  "services": {
+    "add": {
+      "name": "Aggiungi",
+      "description": "Esegue un'azione una sola volta a un orario stabilito, poi elimina la programmazione. Invia `at` oppure `in`, e `action` oppure `service`.",
+      "fields": {
+        "entity_id": {
+          "name": "Entità",
+          "description": "Entità di destinazione. Obbligatoria con `action`."
+        },
+        "action": {
+          "name": "Azione",
+          "description": "Scorciatoia per il dominio dell'entità: turn_on, turn_off o toggle."
+        },
+        "service": {
+          "name": "Servizio",
+          "description": "Qualsiasi servizio da chiamare, nel formato domain.service."
+        },
+        "data": {
+          "name": "Dati",
+          "description": "Dati del servizio."
+        },
+        "at": {
+          "name": "Alle",
+          "description": "Orario (20:00: oggi, o domani se è già passato) oppure data e ora, nel fuso orario di Home Assistant."
+        },
+        "in": {
+          "name": "Tra",
+          "description": "Minuti da adesso."
+        },
+        "name": {
+          "name": "Nome",
+          "description": "Mostrato nella scheda e nel registro. Ricavato da entità, azione e orario se omesso."
+        }
+      }
+    },
+    "cancel": {
+      "name": "Annulla",
+      "description": "Elimina una programmazione in attesa senza eseguirla.",
+      "fields": {
+        "id": {
+          "name": "ID",
+          "description": "ID della programmazione."
+        }
+      }
+    },
+    "run_now": {
+      "name": "Esegui ora",
+      "description": "Esegue ora una programmazione in attesa, poi la elimina.",
+      "fields": {
+        "id": {
+          "name": "ID",
+          "description": "ID della programmazione."
+        }
+      }
+    }
+  }
+}

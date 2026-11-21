@@ -46,5 +46,47 @@ jobs:
       - name: Build card (fails on syntax older browsers cannot parse)
         run: pnpm build:card
 
+      - name: Bundled card matches its source
+        run: |
+          pnpm build:integration
+          git diff --exit-code -- custom_components/later/www \
+            || (echo "Run pnpm build:integration and commit custom_components/later/www/later-card.js" && exit 1)
+
+      - name: Build docs site
+        run: pnpm --filter @later/web build
+
       - name: Test
         run: pnpm test
+
+  visual:
+    # Screenshot comparison in the image the baselines were made in (`pnpm test:visual`).
+    # Keep both jobs' image tags in step with the `playwright` version in pnpm-workspace.yaml.
+    runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.64.1-noble
+      options: --ipc=host
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+          cache: "pnpm"
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Visual tests
+        run: pnpm --filter later-card run test:visual
+
+      - name: Upload screenshot diffs
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: visual-diffs
+          path: packages/later-card/.vitest/attachments/

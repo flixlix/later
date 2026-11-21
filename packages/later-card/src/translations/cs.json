@@ -1,0 +1,60 @@
+{
+  "card": {
+    "title": "Later",
+    "loading": "Načítání…",
+    "nothing_scheduled": "Nic není naplánováno",
+    "schedule_action": "Naplánovat akci",
+    "edit_schedule": "Upravit plán",
+    "edit": "Upravit",
+    "edit_named": "Upravit {name}",
+    "cancel": "Zrušit",
+    "cancel_named": "Zrušit {name}",
+    "could_not_schedule": "Tuto akci se nepodařilo naplánovat",
+    "could_not_save": "{name} se nepodařilo uložit",
+    "load_failed": "Later nemohl načíst své plány: {error}",
+    "not_installed": "Integrace Later není nainstalována. Tato karta funguje pouze s ní. V HACS otevřete Integrace, přidejte Later, restartujte Home Assistanta a poté přidejte Later v Nastavení → Zařízení a služby.",
+    "open_in_hacs": "Otevřít Later v HACS",
+    "not_set_up": "Integrace Later je nainstalována, ale není nastavena. Přidejte ji v Nastavení → Zařízení a služby → Přidat integraci → Later."
+  },
+  "form": {
+    "entity": "Entita",
+    "action": "Akce",
+    "service": "Služba",
+    "other_service": "Jiná služba",
+    "data": "Data služby",
+    "when": "Kdy",
+    "in": "Za {duration}",
+    "custom": "Vlastní",
+    "date_time": "Datum a čas",
+    "minutes": "Minuty",
+    "date": "Datum",
+    "time": "Čas",
+    "name": "Název (volitelné)",
+    "runs": "Spustí se {when}, {relative}",
+    "passed": "Tento čas již uplynul",
+    "save": "Uložit",
+    "schedule": "Naplánovat",
+    "cancel": "Zrušit"
+  },
+  "action": {
+    "turn_on": "Zapnout",
+    "turn_off": "Vypnout",
+    "toggle": "Přepnout"
+  },
+  "error": {
+    "pick_action": "Vyberte akci",
+    "pick_entity": "Vyberte entitu",
+    "pick_service": "Vyberte službu",
+    "pick_when": "Vyberte kdy",
+    "whole_minutes": "Minuty musí být celé číslo větší než 0",
+    "pick_date_time": "Vyberte datum a čas",
+    "in_the_past": "Vyberte čas v budoucnosti"
+  },
+  "time": {
+    "in": "za {duration}"
+  },
+  "editor": {
+    "title": "Název",
+    "entity": "Výchozí entita (předvybraná při plánování)"
+  }
+}

@@ -1,0 +1,89 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Later",
+        "description": "Plánujte jednorazové akcie, ktoré sa spustia raz a potom sa samy odstránia."
+      }
+    },
+    "abort": {
+      "single_instance_allowed": "Later je už nastavený."
+    }
+  },
+  "exceptions": {
+    "not_loaded": {
+      "message": "Later nie je nastavený. Pridajte ho v časti Nastavenia > Zariadenia a služby."
+    },
+    "not_found": {
+      "message": "Neexistuje žiadny čakajúci plán s id {id}."
+    },
+    "action_needs_entity": {
+      "message": "Skratková akcia (zapnúť, vypnúť, prepnúť) vyžaduje entitu."
+    }
+  },
+  "selector": {
+    "action": {
+      "options": {
+        "turn_on": "Zapnúť",
+        "turn_off": "Vypnúť",
+        "toggle": "Prepnúť"
+      }
+    }
+  },
+  "services": {
+    "add": {
+      "name": "Pridať",
+      "description": "Spustí akciu raz v zadanom čase a potom plán odstráni. Zadajte buď `at`, alebo `in` a buď `action`, alebo `service`.",
+      "fields": {
+        "entity_id": {
+          "name": "Entita",
+          "description": "Cieľová entita. Povinná s `action`."
+        },
+        "action": {
+          "name": "Akcia",
+          "description": "Skratka pre doménu entity: turn_on, turn_off alebo toggle."
+        },
+        "service": {
+          "name": "Služba",
+          "description": "Ľubovoľná služba na zavolanie vo formáte domain.service."
+        },
+        "data": {
+          "name": "Údaje",
+          "description": "Údaje služby."
+        },
+        "at": {
+          "name": "O",
+          "description": "Čas (20:00: dnes alebo zajtra, ak už uplynul) alebo dátum a čas v časovom pásme Home Assistant."
+        },
+        "in": {
+          "name": "Za",
+          "description": "Počet minút od teraz."
+        },
+        "name": {
+          "name": "Názov",
+          "description": "Zobrazuje sa na karte a v Aktivite. Ak sa vynechá, odvodí sa z entity, akcie a času."
+        }
+      }
+    },
+    "cancel": {
+      "name": "Zrušiť",
+      "description": "Odstráni čakajúci plán bez jeho spustenia.",
+      "fields": {
+        "id": {
+          "name": "ID",
+          "description": "ID plánu."
+        }
+      }
+    },
+    "run_now": {
+      "name": "Spustiť teraz",
+      "description": "Spustí čakajúci plán teraz a potom ho odstráni.",
+      "fields": {
+        "id": {
+          "name": "ID",
+          "description": "ID plánu."
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,60 @@
+{
+  "card": {
+    "title": "Later",
+    "loading": "Chargement…",
+    "nothing_scheduled": "Rien de planifié",
+    "schedule_action": "Planifier une action",
+    "edit_schedule": "Modifier la planification",
+    "edit": "Modifier",
+    "edit_named": "Modifier {name}",
+    "cancel": "Annuler",
+    "cancel_named": "Annuler {name}",
+    "could_not_schedule": "Impossible de planifier cette action",
+    "could_not_save": "Impossible d'enregistrer {name}",
+    "load_failed": "Later n'a pas pu charger ses planifications : {error}",
+    "not_installed": "L'intégration Later n'est pas installée. Cette carte ne fonctionne qu'avec elle. Dans HACS, ouvrez Intégrations, ajoutez Later, redémarrez Home Assistant, puis ajoutez Later dans Paramètres → Appareils et services.",
+    "open_in_hacs": "Ouvrir Later dans HACS",
+    "not_set_up": "L'intégration Later est installée mais pas configurée. Ajoutez-la dans Paramètres → Appareils et services → Ajouter une intégration → Later."
+  },
+  "form": {
+    "entity": "Entité",
+    "action": "Action",
+    "service": "Service",
+    "other_service": "Autre service",
+    "data": "Données du service",
+    "when": "Quand",
+    "in": "Dans {duration}",
+    "custom": "Personnalisé",
+    "date_time": "Date et heure",
+    "minutes": "Minutes",
+    "date": "Date",
+    "time": "Heure",
+    "name": "Nom (optionnel)",
+    "runs": "S'exécute {when}, {relative}",
+    "passed": "Cette heure est passée",
+    "save": "Enregistrer",
+    "schedule": "Planifier",
+    "cancel": "Annuler"
+  },
+  "action": {
+    "turn_on": "Allumer",
+    "turn_off": "Éteindre",
+    "toggle": "Basculer"
+  },
+  "error": {
+    "pick_action": "Choisissez une action",
+    "pick_entity": "Choisissez une entité",
+    "pick_service": "Choisissez un service",
+    "pick_when": "Choisissez quand",
+    "whole_minutes": "Les minutes doivent être un nombre entier supérieur à 0",
+    "pick_date_time": "Choisissez une date et une heure",
+    "in_the_past": "Choisissez une heure dans le futur"
+  },
+  "time": {
+    "in": "dans {duration}"
+  },
+  "editor": {
+    "title": "Titre",
+    "entity": "Entité par défaut (présélectionnée lors de la planification)"
+  }
+}
