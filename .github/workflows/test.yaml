@@ -21,7 +21,7 @@ jobs:
       options: --ipc=host
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       # The container user does not own the checkout, and checkout's safe.directory only lasts
       # for its own step, so the build id would fall back to "unknown" without this.
