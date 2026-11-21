@@ -1,0 +1,26 @@
+title: Later
+views:
+  - title: Later
+    path: later
+    type: sections
+    sections:
+      - type: grid
+        cards:
+          - type: custom:later-card
+            title: Later
+            entity: switch.heater
+      - type: grid
+        cards:
+          - type: entities
+            title: Dummy entities
+            entities:
+              - switch.heater
+              - light.desk_lamp
+              - climate.office
+              - input_number.office_temperature
+          - type: logbook
+            target:
+              entity_id:
+                - switch.heater
+                - light.desk_lamp
+            hours_to_show: 24

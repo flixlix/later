@@ -1,0 +1,13 @@
+# Dev and e2e Home Assistant: `pnpm hass:up` (see e2e/README.md).
+# HA_VERSION=beta pnpm hass:up runs the beta instead of stable.
+name: later-hass
+services:
+  homeassistant:
+    image: homeassistant/home-assistant:${HA_VERSION:-stable}
+    ports:
+      - "8123:8123"
+    volumes:
+      - ./.hass_dev:/config
+      - ./custom_components/later:/config/custom_components/later
+      # The dev build of the card over the committed release build; a rebuild shows on reload.
+      - ./packages/later-card/dist/later-card.js:/config/custom_components/later/www/later-card.js:ro

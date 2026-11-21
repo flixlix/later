@@ -1,0 +1,18 @@
+# Dev and e2e Home Assistant. Start with `pnpm hass:up` (see e2e/README.md).
+default_config:
+
+homeassistant:
+  name: Later Dev
+  # Not UTC, so clock times in the card and the stored UTC due times differ visibly.
+  time_zone: Europe/Berlin
+  unit_system: metric
+  currency: EUR
+  country: DE
+  packages: !include_dir_named packages/
+
+lovelace: !include lovelace.yaml
+
+logger:
+  default: warning
+  logs:
+    custom_components.later: debug

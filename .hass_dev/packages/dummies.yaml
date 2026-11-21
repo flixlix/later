@@ -1,0 +1,60 @@
+# Entities to schedule: a switch, a light and a thermostat, all backed by helpers.
+# The thermostat has its own heater helper, so it never switches switch.heater behind a test.
+input_boolean:
+  heater_power:
+    name: Heater power
+    initial: true
+  desk_lamp_power:
+    name: Desk lamp power
+    initial: true
+  office_heating:
+    name: Office heating
+
+input_number:
+  office_temperature:
+    name: Office temperature
+    min: 10
+    max: 30
+    step: 0.5
+    initial: 19
+    unit_of_measurement: "°C"
+
+template:
+  - switch:
+      - name: Heater
+        unique_id: later_dev_heater
+        state: "{{ is_state('input_boolean.heater_power', 'on') }}"
+        turn_on:
+          - action: input_boolean.turn_on
+            target:
+              entity_id: input_boolean.heater_power
+        turn_off:
+          - action: input_boolean.turn_off
+            target:
+              entity_id: input_boolean.heater_power
+    light:
+      - name: Desk lamp
+        unique_id: later_dev_desk_lamp
+        state: "{{ is_state('input_boolean.desk_lamp_power', 'on') }}"
+        turn_on:
+          - action: input_boolean.turn_on
+            target:
+              entity_id: input_boolean.desk_lamp_power
+        turn_off:
+          - action: input_boolean.turn_off
+            target:
+              entity_id: input_boolean.desk_lamp_power
+    sensor:
+      - name: Office temperature sensor
+        unique_id: later_dev_office_temperature
+        unit_of_measurement: "°C"
+        device_class: temperature
+        state: "{{ states('input_number.office_temperature') }}"
+
+climate:
+  - platform: generic_thermostat
+    name: Office
+    unique_id: later_dev_office
+    heater: input_boolean.office_heating
+    target_sensor: sensor.office_temperature_sensor
+    target_temp: 20
