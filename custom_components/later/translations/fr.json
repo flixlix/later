@@ -1,0 +1,89 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Later",
+        "description": "Planifiez des actions ponctuelles qui s'exécutent une seule fois puis se suppriment."
+      }
+    },
+    "abort": {
+      "single_instance_allowed": "Later est déjà configuré."
+    }
+  },
+  "exceptions": {
+    "not_loaded": {
+      "message": "Later n'est pas configuré. Ajoutez-le dans Paramètres > Appareils et services."
+    },
+    "not_found": {
+      "message": "Aucune planification en attente avec l'id {id}."
+    },
+    "action_needs_entity": {
+      "message": "Une action raccourcie (allumer, éteindre, basculer) nécessite une entité."
+    }
+  },
+  "selector": {
+    "action": {
+      "options": {
+        "turn_on": "Allumer",
+        "turn_off": "Éteindre",
+        "toggle": "Basculer"
+      }
+    }
+  },
+  "services": {
+    "add": {
+      "name": "Ajouter",
+      "description": "Exécute une action une seule fois à une heure donnée, puis supprime la planification. Envoyez soit `at` soit `in`, et soit `action` soit `service`.",
+      "fields": {
+        "entity_id": {
+          "name": "Entité",
+          "description": "Entité cible. Requise avec `action`."
+        },
+        "action": {
+          "name": "Action",
+          "description": "Raccourci pour le domaine de l'entité : turn_on, turn_off ou toggle."
+        },
+        "service": {
+          "name": "Service",
+          "description": "N'importe quel service à appeler, sous la forme domain.service."
+        },
+        "data": {
+          "name": "Données",
+          "description": "Données du service."
+        },
+        "at": {
+          "name": "À",
+          "description": "Heure (20:00 : aujourd'hui, ou demain si elle est passée) ou date et heure, dans le fuseau horaire de Home Assistant."
+        },
+        "in": {
+          "name": "Dans",
+          "description": "Minutes à partir de maintenant."
+        },
+        "name": {
+          "name": "Nom",
+          "description": "Affiché dans la carte et le journal. Déduit de l'entité, de l'action et de l'heure s'il est omis."
+        }
+      }
+    },
+    "cancel": {
+      "name": "Annuler",
+      "description": "Supprime une planification en attente sans l'exécuter.",
+      "fields": {
+        "id": {
+          "name": "ID",
+          "description": "ID de la planification."
+        }
+      }
+    },
+    "run_now": {
+      "name": "Exécuter maintenant",
+      "description": "Exécute maintenant une planification en attente, puis la supprime.",
+      "fields": {
+        "id": {
+          "name": "ID",
+          "description": "ID de la planification."
+        }
+      }
+    }
+  }
+}

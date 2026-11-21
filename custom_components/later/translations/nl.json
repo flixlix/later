@@ -1,0 +1,89 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Later",
+        "description": "Plan eenmalige acties die één keer worden uitgevoerd en zichzelf daarna verwijderen."
+      }
+    },
+    "abort": {
+      "single_instance_allowed": "Later is al ingesteld."
+    }
+  },
+  "exceptions": {
+    "not_loaded": {
+      "message": "Later is niet ingesteld. Voeg het toe onder Instellingen > Apparaten en diensten."
+    },
+    "not_found": {
+      "message": "Geen openstaande planning met id {id}."
+    },
+    "action_needs_entity": {
+      "message": "Een snelkoppelingsactie (aanzetten, uitzetten, schakelen) heeft een entiteit nodig."
+    }
+  },
+  "selector": {
+    "action": {
+      "options": {
+        "turn_on": "Zet aan",
+        "turn_off": "Zet uit",
+        "toggle": "Schakelen"
+      }
+    }
+  },
+  "services": {
+    "add": {
+      "name": "Toevoegen",
+      "description": "Voert een actie één keer uit op een tijdstip en verwijdert daarna de planning. Stuur `at` of `in`, en `action` of `service`.",
+      "fields": {
+        "entity_id": {
+          "name": "Entiteit",
+          "description": "Doelentiteit. Verplicht bij `action`."
+        },
+        "action": {
+          "name": "Actie",
+          "description": "Snelkoppeling voor het domein van de entiteit: turn_on, turn_off of toggle."
+        },
+        "service": {
+          "name": "Dienst",
+          "description": "Elke aan te roepen dienst, als domain.service."
+        },
+        "data": {
+          "name": "Gegevens",
+          "description": "Dienstgegevens."
+        },
+        "at": {
+          "name": "Om",
+          "description": "Kloktijd (20:00: vandaag, of morgen als die al voorbij is) of een datum en tijd, in de tijdzone van Home Assistant."
+        },
+        "in": {
+          "name": "Over",
+          "description": "Minuten vanaf nu."
+        },
+        "name": {
+          "name": "Naam",
+          "description": "Getoond in de kaart en het logboek. Afgeleid van de entiteit, actie en tijd als dit leeg blijft."
+        }
+      }
+    },
+    "cancel": {
+      "name": "Annuleren",
+      "description": "Verwijdert een openstaande planning zonder deze uit te voeren.",
+      "fields": {
+        "id": {
+          "name": "ID",
+          "description": "ID van de planning."
+        }
+      }
+    },
+    "run_now": {
+      "name": "Nu uitvoeren",
+      "description": "Voert een openstaande planning nu uit en verwijdert deze daarna.",
+      "fields": {
+        "id": {
+          "name": "ID",
+          "description": "ID van de planning."
+        }
+      }
+    }
+  }
+}

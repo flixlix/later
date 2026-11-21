@@ -1,0 +1,89 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Later",
+        "description": "Planlæg engangshandlinger, der kører én gang og sletter sig selv."
+      }
+    },
+    "abort": {
+      "single_instance_allowed": "Later er allerede sat op."
+    }
+  },
+  "exceptions": {
+    "not_loaded": {
+      "message": "Later er ikke sat op. Tilføj det under Indstillinger > Enheder & tjenester."
+    },
+    "not_found": {
+      "message": "Ingen ventende plan med id {id}."
+    },
+    "action_needs_entity": {
+      "message": "En genvejshandling (tænd, sluk, omskift) kræver en entitet."
+    }
+  },
+  "selector": {
+    "action": {
+      "options": {
+        "turn_on": "Tænd",
+        "turn_off": "Sluk",
+        "toggle": "Omskift"
+      }
+    }
+  },
+  "services": {
+    "add": {
+      "name": "Tilføj",
+      "description": "Kører en handling én gang på et tidspunkt og sletter derefter planen. Send enten `at` eller `in` og enten `action` eller `service`.",
+      "fields": {
+        "entity_id": {
+          "name": "Entitet",
+          "description": "Målentitet. Påkrævet med `action`."
+        },
+        "action": {
+          "name": "Handling",
+          "description": "Genvej for entitetens domæne: turn_on, turn_off eller toggle."
+        },
+        "service": {
+          "name": "Tjeneste",
+          "description": "Enhver tjeneste, der skal kaldes, som domain.service."
+        },
+        "data": {
+          "name": "Data",
+          "description": "Tjenestedata."
+        },
+        "at": {
+          "name": "Kl.",
+          "description": "Klokkeslæt (20:00: i dag, eller i morgen hvis det er passeret) eller en dato og et tidspunkt i Home Assistants tidszone."
+        },
+        "in": {
+          "name": "Om",
+          "description": "Minutter fra nu."
+        },
+        "name": {
+          "name": "Navn",
+          "description": "Vises i kortet og i aktivitet. Udledes af entitet, handling og tidspunkt, hvis det udelades."
+        }
+      }
+    },
+    "cancel": {
+      "name": "Annullér",
+      "description": "Sletter en ventende plan uden at køre den.",
+      "fields": {
+        "id": {
+          "name": "ID",
+          "description": "Planens ID."
+        }
+      }
+    },
+    "run_now": {
+      "name": "Kør nu",
+      "description": "Kører en ventende plan nu og sletter den derefter.",
+      "fields": {
+        "id": {
+          "name": "ID",
+          "description": "Planens ID."
+        }
+      }
+    }
+  }
+}

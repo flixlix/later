@@ -1,0 +1,89 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Later",
+        "description": "Programa accions puntuals que s'executen una sola vegada i s'eliminen soles."
+      }
+    },
+    "abort": {
+      "single_instance_allowed": "Later ja està configurat."
+    }
+  },
+  "exceptions": {
+    "not_loaded": {
+      "message": "Later no està configurat. Afegeix-lo a Configuració > Dispositius i serveis."
+    },
+    "not_found": {
+      "message": "No hi ha cap programació pendent amb l'id {id}."
+    },
+    "action_needs_entity": {
+      "message": "Una acció ràpida (activa, desactiva, commuta) necessita una entitat."
+    }
+  },
+  "selector": {
+    "action": {
+      "options": {
+        "turn_on": "Activa",
+        "turn_off": "Desactiva",
+        "toggle": "Commuta"
+      }
+    }
+  },
+  "services": {
+    "add": {
+      "name": "Afegeix",
+      "description": "Executa una acció una sola vegada a una hora i després elimina la programació. Envia `at` o `in`, i `action` o `service`.",
+      "fields": {
+        "entity_id": {
+          "name": "Entitat",
+          "description": "Entitat objectiu. Obligatòria amb `action`."
+        },
+        "action": {
+          "name": "Acció",
+          "description": "Drecera per al domini de l'entitat: turn_on, turn_off o toggle."
+        },
+        "service": {
+          "name": "Servei",
+          "description": "Qualsevol servei a cridar, en format domain.service."
+        },
+        "data": {
+          "name": "Dades",
+          "description": "Dades del servei."
+        },
+        "at": {
+          "name": "A les",
+          "description": "Hora (20:00: avui, o demà si ja ha passat) o una data i hora, a la zona horària de Home Assistant."
+        },
+        "in": {
+          "name": "D'aquí a",
+          "description": "Minuts a partir d'ara."
+        },
+        "name": {
+          "name": "Nom",
+          "description": "Es mostra a la targeta i a l'activitat. Si s'omet, es deriva de l'entitat, l'acció i l'hora."
+        }
+      }
+    },
+    "cancel": {
+      "name": "Cancel·la",
+      "description": "Elimina una programació pendent sense executar-la.",
+      "fields": {
+        "id": {
+          "name": "ID",
+          "description": "ID de la programació."
+        }
+      }
+    },
+    "run_now": {
+      "name": "Executa ara",
+      "description": "Executa ara una programació pendent i després l'elimina.",
+      "fields": {
+        "id": {
+          "name": "ID",
+          "description": "ID de la programació."
+        }
+      }
+    }
+  }
+}
