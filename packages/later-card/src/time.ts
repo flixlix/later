@@ -28,13 +28,20 @@ const dayKey = (moment: Date, timeZone: string): string =>
     day: "2-digit",
   }).format(moment);
 
-const timeOfDay = (moment: Date, clock: Clock): string =>
-  new Intl.DateTimeFormat(clock.language, {
+const usesHour12 = (clock: Clock): boolean =>
+  clock.hour12 ??
+  new Intl.DateTimeFormat(clock.language, { hour: "numeric" }).resolvedOptions().hour12 === true;
+
+/** `20:00` on a 24-hour clock, `8:00 PM` on a 12-hour one. */
+const timeOfDay = (moment: Date, clock: Clock): string => {
+  const hour12 = usesHour12(clock);
+  return new Intl.DateTimeFormat(clock.language, {
     timeZone: clock.timeZone,
-    hour: "2-digit",
+    hour: hour12 ? "numeric" : "2-digit",
     minute: "2-digit",
-    hour12: clock.hour12,
+    hour12,
   }).format(moment);
+};
 
 /** `20:00` today, `tomorrow 07:00`, otherwise `Wed, 24 Dec 07:00`. */
 export function clockLabel(runAt: Date, now: Date, clock: Clock): string {

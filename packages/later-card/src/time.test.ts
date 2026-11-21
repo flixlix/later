@@ -31,6 +31,19 @@ describe("clockLabel", () => {
     expect(clockLabel(at("2026-12-24T17:00:00Z"), NOW, berlin)).toBe("Thu 24 Dec 18:00");
   });
 
+  test("uses a 12-hour clock where the language or the user setting does", () => {
+    expect(
+      clockLabel(at("2026-11-21T19:00:00Z"), NOW, {
+        ...berlin,
+        language: "en-US",
+        hour12: undefined,
+      })
+    ).toBe("8:00 PM");
+    expect(
+      clockLabel(at("2026-11-21T19:00:00Z"), NOW, { ...berlin, language: "en-US", hour12: true })
+    ).toBe("8:00 PM");
+  });
+
   test("follows the time zone, not UTC", () => {
     const tokyo = { ...berlin, timeZone: "Asia/Tokyo" };
     // 03:00 on the 22nd in Tokyo, where it is already the 22nd.
