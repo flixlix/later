@@ -52,6 +52,9 @@ jobs:
           git diff --exit-code -- custom_components/later/www \
             || (echo "Run pnpm build:integration and commit custom_components/later/www/later-card.js" && exit 1)
 
+      - name: Build docs site
+        run: pnpm --filter @later/web build
+
       - name: Test
         run: pnpm test
 

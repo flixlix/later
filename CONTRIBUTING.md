@@ -57,6 +57,13 @@ uv run ruff check . && uv run ruff format --check .
 uv run pytest
 ```
 
+Docs site (`apps/web`, TanStack Start; Vercel preset, meant for later.flixlix.com):
+
+```bash
+pnpm --filter @later/web dev    # http://localhost:3000
+pnpm --filter @later/web build
+```
+
 End to end, against `pnpm hass:up`:
 
 ```bash
