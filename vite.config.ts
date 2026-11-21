@@ -67,6 +67,7 @@ export default defineConfig({
       "later/cognitive-complexity": ["error", { max: 15 }],
       // Home Assistant frontend guards
       "later/no-camelcase-event-binding": "error",
+      "later/no-instanceof-custom-event": "error",
       "later/no-mwc-elements": "error",
       "later/no-native-date-input": "error",
       "vite-plus/prefer-vite-plus-imports": "error",
