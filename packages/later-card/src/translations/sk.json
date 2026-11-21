@@ -1,0 +1,60 @@
+{
+  "card": {
+    "title": "Later",
+    "loading": "Načítava sa…",
+    "nothing_scheduled": "Nič nie je naplánované",
+    "schedule_action": "Naplánovať akciu",
+    "edit_schedule": "Upraviť plán",
+    "edit": "Upraviť",
+    "edit_named": "Upraviť {name}",
+    "cancel": "Zrušiť",
+    "cancel_named": "Zrušiť {name}",
+    "could_not_schedule": "Túto akciu sa nepodarilo naplánovať",
+    "could_not_save": "Nepodarilo sa uložiť {name}",
+    "load_failed": "Later nedokázal načítať plány: {error}",
+    "not_installed": "Integrácia Later nie je nainštalovaná. Táto karta funguje iba s ňou. V HACS otvorte Integrácie, pridajte Later, reštartujte Home Assistant a potom pridajte Later v časti Nastavenia → Zariadenia a služby.",
+    "open_in_hacs": "Otvoriť Later v HACS",
+    "not_set_up": "Integrácia Later je nainštalovaná, ale nie je nastavená. Pridajte ju v časti Nastavenia → Zariadenia a služby → Pridať integráciu → Later."
+  },
+  "form": {
+    "entity": "Entita",
+    "action": "Akcia",
+    "service": "Služba",
+    "other_service": "Iná služba",
+    "data": "Údaje služby",
+    "when": "Kedy",
+    "in": "O {duration}",
+    "custom": "Vlastné",
+    "date_time": "Dátum a čas",
+    "minutes": "Minúty",
+    "date": "Dátum",
+    "time": "Čas",
+    "name": "Názov (voliteľné)",
+    "runs": "Spustí sa {when}, {relative}",
+    "passed": "Tento čas už uplynul",
+    "save": "Uložiť",
+    "schedule": "Naplánovať",
+    "cancel": "Zrušiť"
+  },
+  "action": {
+    "turn_on": "Zapnúť",
+    "turn_off": "Vypnúť",
+    "toggle": "Prepnúť"
+  },
+  "error": {
+    "pick_action": "Vyberte akciu",
+    "pick_entity": "Vyberte entitu",
+    "pick_service": "Vyberte službu",
+    "pick_when": "Vyberte čas",
+    "whole_minutes": "Minúty musia byť celé číslo väčšie ako 0",
+    "pick_date_time": "Vyberte dátum a čas",
+    "in_the_past": "Vyberte čas v budúcnosti"
+  },
+  "time": {
+    "in": "o {duration}"
+  },
+  "editor": {
+    "title": "Názov",
+    "entity": "Predvolená entita (vopred vybraná pri plánovaní)"
+  }
+}

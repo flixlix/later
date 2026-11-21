@@ -12,8 +12,9 @@ import { repeat } from "lit/directives/repeat.js";
 import { assert, StructError } from "superstruct";
 import { version } from "../package.json";
 import { LaterCreateForm } from "./create-form";
+import { type Localize, localizer } from "./localize";
 import { actionSummary } from "./request";
-import { type Clock, clockLabel, relativeLabel } from "./time";
+import { type Clock, clockLabel, msToNextMinute, relativeLabel } from "./time";
 import {
   type AddRequest,
   type LaterCardConfig,
@@ -25,6 +26,7 @@ import {
   addSchedule,
   cancelSchedule,
   subscribeSchedules,
+  updateSchedule,
   websocketError,
   type WebsocketError,
 } from "./websocket";
@@ -42,16 +44,16 @@ if (!customElements.get("later-create-form")) {
 
 const INSTALL_URL =
   "https://my.home-assistant.io/redirect/hacs_repository/?owner=flixlix&repository=later&category=integration";
-const TICK = 30_000;
 
-/** The dashboard's clock: Home Assistant's time zone unless the user picked the browser's. */
+/**
+ * The dashboard's clock: Home Assistant's time zone, the one the integration reads times in and
+ * names schedules with, and the user's 12- or 24-hour setting.
+ */
 export function clockOf(hass: HomeAssistant): Clock {
   const locale = hass.locale as Partial<HomeAssistant["locale"]> | undefined;
-  const browserZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-  const timeZoneSetting: string | undefined = locale?.time_zone;
   const timeFormat: string = locale?.time_format ?? "language";
   return {
-    timeZone: timeZoneSetting === "local" ? browserZone : hass.config.time_zone,
+    timeZone: hass.config.time_zone,
     language: locale?.language ?? hass.language,
     hour12: timeFormat === "12" ? true : timeFormat === "24" ? false : undefined,
   };
@@ -64,11 +66,14 @@ export class LaterCard extends LitElement implements LovelaceCard {
   /** Undefined until the subscription delivers the first list. */
   @state() private _schedules?: Schedule[];
   @state() private _error?: WebsocketError;
+  /** Whether the dialog with the create form is open. */
   @state() private _creating = false;
+  /** The schedule the dialog edits; undefined while creating one. */
+  @state() private _editing?: Schedule;
   @state() private _now = new Date();
 
   private _unsubscribe?: Promise<() => Promise<void>>;
-  private _tick?: ReturnType<typeof setInterval>;
+  private _tick?: ReturnType<typeof setTimeout>;
 
   public static getConfigElement(): LovelaceCardEditor {
     return new LaterCardEditor();
@@ -93,15 +98,13 @@ export class LaterCard extends LitElement implements LovelaceCard {
   }
 
   public getCardSize(): number {
-    return 2 + (this._schedules?.length ?? 0) + (this._creating ? 6 : 0);
+    return 2 + (this._schedules?.length ?? 0);
   }
 
   public connectedCallback(): void {
     super.connectedCallback();
     void loadHaForm();
-    this._tick = setInterval(() => {
-      this._now = new Date();
-    }, TICK);
+    this._tickEachMinute();
     if (this.hass) {
       this._subscribe();
     }
@@ -109,7 +112,7 @@ export class LaterCard extends LitElement implements LovelaceCard {
 
   public disconnectedCallback(): void {
     super.disconnectedCallback();
-    clearInterval(this._tick);
+    clearTimeout(this._tick);
     this._unsubscribe
       ?.then((unsubscribe) => unsubscribe())
       .catch((error: unknown) => {
@@ -125,9 +128,18 @@ export class LaterCard extends LitElement implements LovelaceCard {
     }
   }
 
+  /** Labels change by the minute: wake once at each minute boundary, not on an interval. */
+  private _tickEachMinute(): void {
+    this._tick = setTimeout(() => {
+      this._now = new Date();
+      this._tickEachMinute();
+    }, msToNextMinute(new Date()));
+  }
+
   private _subscribe(): void {
     this._error = undefined;
     this._unsubscribe = subscribeSchedules(this.hass, (event) => {
+      this._now = new Date();
       this._schedules = event.schedules;
     }).catch((error: unknown) => {
       this._error = websocketError(error);
@@ -135,18 +147,23 @@ export class LaterCard extends LitElement implements LovelaceCard {
     });
   }
 
+  private get _localize(): Localize {
+    return localizer(clockOf(this.hass).language);
+  }
+
   protected render(): TemplateResult {
+    const t = this._localize;
     return html`<ha-card>
       <div class="header">
-        <h1>${this._config?.title ?? "Later"}</h1>
+        <h1>${this._config?.title ?? t("card.title")}</h1>
         ${
-          this._schedules && !this._creating && !this._error
+          this._schedules && !this._error
             ? html`<button
                 class="icon"
                 type="button"
-                aria-label="Schedule an action"
-                title="Schedule an action"
-                @click=${this._openForm}
+                aria-label=${t("card.schedule_action")}
+                title=${t("card.schedule_action")}
+                @click=${() => this._openForm()}
               >
                 <ha-svg-icon .path=${mdiPlus}></ha-svg-icon>
               </button>`
@@ -162,54 +179,57 @@ export class LaterCard extends LitElement implements LovelaceCard {
       return this._renderError(this._error);
     }
     if (!this._schedules) {
-      return html`<p class="muted">Loading…</p>`;
+      return html`<p class="muted">${this._localize("card.loading")}</p>`;
     }
-    return html`${this._creating ? this._renderForm() : nothing}
+    return html`${this._creating ? this._renderDialog() : nothing}
     ${this._schedules.length ? this._renderList(this._schedules) : this._renderEmpty()}`;
   }
 
   private _renderError(error: WebsocketError) {
+    const t = this._localize;
     if (error.code === "unknown_command") {
       return html`<div class="notice" role="alert">
-        <p>
-          The <b>Later</b> integration is not installed. This card only works with it. In HACS, open
-          <b>Integrations</b>, add <b>Later</b>, restart Home Assistant, then add Later under
-          Settings → Devices & services.
-        </p>
-        <a href=${INSTALL_URL} target="_blank" rel="noreferrer">Open Later in HACS</a>
+        <p>${t("card.not_installed")}</p>
+        <a href=${INSTALL_URL} target="_blank" rel="noreferrer">${t("card.open_in_hacs")}</a>
       </div>`;
     }
     if (error.code === "not_loaded") {
       return html`<div class="notice" role="alert">
-        <p>
-          The <b>Later</b> integration is installed but not set up. Add it under Settings → Devices
-          & services → Add integration → Later.
-        </p>
+        <p>${t("card.not_set_up")}</p>
       </div>`;
     }
     return html`<div class="notice" role="alert">
-      <p>Later could not load its schedules: ${error.message || error.code}</p>
+      <p>${t("card.load_failed", { error: error.message || error.code })}</p>
     </div>`;
   }
 
-  private _renderForm() {
-    return html`<later-create-form
-      .hass=${this.hass}
-      .entity=${this._config?.entity}
-      .timeZone=${this.hass.config.time_zone}
-      .submit=${this._submit}
-      @closed=${this._closeForm}
-    ></later-create-form>`;
+  private _renderDialog() {
+    const title = this._localize(this._editing ? "card.edit_schedule" : "card.schedule_action");
+    // `headerTitle` for Home Assistant's current dialog, `heading` for the one before it.
+    return html`<ha-dialog
+      open
+      .headerTitle=${title}
+      .heading=${title}
+      @closed=${this._dialogClosed}
+    >
+      <later-create-form
+        .hass=${this.hass}
+        .entity=${this._config?.entity}
+        .schedule=${this._editing}
+        .clock=${clockOf(this.hass)}
+        .submit=${this._submit}
+        @closed=${this._closeForm}
+      ></later-create-form>
+    </ha-dialog>`;
   }
 
   private _renderEmpty() {
-    if (this._creating) {
-      return nothing;
-    }
     return html`<div class="empty">
       <ha-svg-icon .path=${mdiTimerOutline}></ha-svg-icon>
-      <p>Nothing scheduled</p>
-      <button class="primary" type="button" @click=${this._openForm}>Schedule an action</button>
+      <p>${this._localize("card.nothing_scheduled")}</p>
+      <button class="primary" type="button" @click=${() => this._openForm()}>
+        ${this._localize("card.schedule_action")}
+      </button>
     </div>`;
   }
 
@@ -225,31 +245,42 @@ export class LaterCard extends LitElement implements LovelaceCard {
   }
 
   private _renderRow(schedule: Schedule, clock: Clock) {
+    const t = this._localize;
     const runAt = new Date(schedule.run_at);
     const stateObj = schedule.entity_id ? this.hass.states[schedule.entity_id] : undefined;
     const friendlyName = stateObj?.attributes.friendly_name;
     const target =
       typeof friendlyName === "string" ? friendlyName : (schedule.entity_id ?? undefined);
-    const summary = [actionSummary(schedule.service), target].filter(Boolean).join(" · ");
+    const summary = [actionSummary(schedule.service, t), target].filter(Boolean).join(" · ");
     return html`<li class="row" data-id=${schedule.id}>
       ${
         stateObj
           ? html`<ha-state-icon .hass=${this.hass} .stateObj=${stateObj}></ha-state-icon>`
           : html`<ha-svg-icon .path=${mdiTimerSandComplete}></ha-svg-icon>`
       }
-      <div class="text">
-        <span class="name">${schedule.name}</span>
-        <span class="secondary">${summary}</span>
-      </div>
-      <div class="due">
-        <span class="clock">${clockLabel(runAt, this._now, clock)}</span>
-        <span class="secondary relative">${relativeLabel(runAt, this._now)}</span>
-      </div>
+      <button
+        class="open"
+        type="button"
+        aria-label=${t("card.edit_named", { name: schedule.name })}
+        title=${t("card.edit")}
+        @click=${() => this._openForm(schedule)}
+      >
+        <span class="text">
+          <span class="name">${schedule.name}</span>
+          <span class="secondary">${summary}</span>
+        </span>
+        <span class="due">
+          <span class="clock">${clockLabel(runAt, this._now, clock)}</span>
+          <span class="secondary relative"
+            >${relativeLabel(runAt, this._now, clock.language, t)}</span
+          >
+        </span>
+      </button>
       <button
         class="icon"
         type="button"
-        aria-label=${`Cancel ${schedule.name}`}
-        title="Cancel"
+        aria-label=${t("card.cancel_named", { name: schedule.name })}
+        title=${t("card.cancel")}
         @click=${() => this._cancel(schedule.id)}
       >
         <ha-svg-icon .path=${mdiClose}></ha-svg-icon>
@@ -257,21 +288,34 @@ export class LaterCard extends LitElement implements LovelaceCard {
     </li>`;
   }
 
-  private _openForm = (): void => {
+  private _openForm = (schedule?: Schedule): void => {
+    this._editing = schedule;
     this._creating = true;
+  };
+
+  /** Escape, the scrim or the close button; ignores `closed` from menus inside the form. */
+  private _dialogClosed = (event: Event): void => {
+    if (event.target === event.currentTarget) {
+      this._closeForm();
+    }
   };
 
   private _closeForm = (): void => {
     this._creating = false;
+    this._editing = undefined;
   };
 
   private _submit = async (request: AddRequest): Promise<void> => {
+    const editing = this._editing;
     try {
-      await addSchedule(this.hass, request);
+      await (editing
+        ? updateSchedule(this.hass, editing.id, request)
+        : addSchedule(this.hass, request));
     } catch (error) {
-      throw new Error(websocketError(error).message || "Could not schedule this action", {
-        cause: error,
-      });
+      const fallback = editing
+        ? this._localize("card.could_not_save", { name: editing.name })
+        : this._localize("card.could_not_schedule");
+      throw new Error(websocketError(error).message || fallback, { cause: error });
     }
   };
 
@@ -341,9 +385,6 @@ export class LaterCard extends LitElement implements LovelaceCard {
       margin: 0;
       padding: 0;
     }
-    later-create-form + .list {
-      margin-top: 16px;
-    }
     .row {
       display: flex;
       align-items: center;
@@ -357,6 +398,18 @@ export class LaterCard extends LitElement implements LovelaceCard {
     .row > ha-state-icon {
       color: var(--state-icon-color, var(--secondary-text-color));
       flex: none;
+    }
+    .open {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+      border: none;
+      background: none;
+      color: inherit;
+      padding: 4px 0;
+      text-align: left;
     }
     .text,
     .due {

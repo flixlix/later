@@ -1,0 +1,60 @@
+{
+  "card": {
+    "title": "Later",
+    "loading": "Loading…",
+    "nothing_scheduled": "Nothing scheduled",
+    "schedule_action": "Schedule an action",
+    "edit_schedule": "Edit schedule",
+    "edit": "Edit",
+    "edit_named": "Edit {name}",
+    "cancel": "Cancel",
+    "cancel_named": "Cancel {name}",
+    "could_not_schedule": "Could not schedule this action",
+    "could_not_save": "Could not save {name}",
+    "load_failed": "Later could not load its schedules: {error}",
+    "not_installed": "The Later integration is not installed. This card only works with it. In HACS, open Integrations, add Later, restart Home Assistant, then add Later under Settings → Devices & services.",
+    "open_in_hacs": "Open Later in HACS",
+    "not_set_up": "The Later integration is installed but not set up. Add it under Settings → Devices & services → Add integration → Later."
+  },
+  "form": {
+    "entity": "Entity",
+    "action": "Action",
+    "service": "Service",
+    "other_service": "Other service",
+    "data": "Service data",
+    "when": "When",
+    "in": "In {duration}",
+    "custom": "Custom",
+    "date_time": "Date & time",
+    "minutes": "Minutes",
+    "date": "Date",
+    "time": "Time",
+    "name": "Name (optional)",
+    "runs": "Runs {when}, {relative}",
+    "passed": "That time has passed",
+    "save": "Save",
+    "schedule": "Schedule",
+    "cancel": "Cancel"
+  },
+  "action": {
+    "turn_on": "Turn on",
+    "turn_off": "Turn off",
+    "toggle": "Toggle"
+  },
+  "error": {
+    "pick_action": "Pick an action",
+    "pick_entity": "Pick an entity",
+    "pick_service": "Pick a service",
+    "pick_when": "Pick when",
+    "whole_minutes": "Minutes must be a whole number above 0",
+    "pick_date_time": "Pick a date and time",
+    "in_the_past": "Pick a time in the future"
+  },
+  "time": {
+    "in": "in {duration}"
+  },
+  "editor": {
+    "title": "Title",
+    "entity": "Default entity (preselected when scheduling)"
+  }
+}

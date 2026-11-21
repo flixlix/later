@@ -23,7 +23,13 @@ export type Schedule = {
   source: "card" | "service";
 };
 
-export type ScheduleChangeType = "created" | "cancelled" | "ran" | "late_ran" | "failed";
+export type ScheduleChangeType =
+  | "created"
+  | "updated"
+  | "cancelled"
+  | "ran"
+  | "late_ran"
+  | "failed";
 
 /** What `later/subscribe` pushes: the whole list first, then one event per change. */
 export type ScheduleEvent =
@@ -33,7 +39,7 @@ export type ScheduleEvent =
 export const SHORTCUTS = ["turn_on", "turn_off", "toggle"] as const;
 export type Shortcut = (typeof SHORTCUTS)[number];
 
-/** The payload of `later/add`, as for the `later.add` service. */
+/** The payload of `later/add` and `later/update`, as for the `later.add` service. */
 export type AddRequest = {
   entity_id?: string;
   action?: Shortcut;

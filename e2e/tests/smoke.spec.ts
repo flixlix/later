@@ -53,6 +53,30 @@ test("schedule from the card, then cancel it", async ({ page }) => {
   await expect(pendingRows(page)).toHaveCount(before);
 });
 
+test("picks an entity in Home Assistant's picker inside the dialog", async ({ page }) => {
+  await openDashboard(page, LATER_DASHBOARD);
+  const card = page.locator("later-card");
+  await card
+    .getByRole("button", { name: /schedule an action/i })
+    .first()
+    .click();
+
+  await card.getByRole("button", { name: "Clear", exact: true }).click();
+  await card.getByRole("button", { name: /select an entity/i }).click();
+  await page.getByPlaceholder("Search").fill("Desk lamp");
+  await page.getByRole("option", { name: /^Desk lamp Light/ }).click();
+
+  await expect(card.getByRole("button", { name: /Entity Desk lamp/ })).toBeVisible();
+  await card.locator('[data-chip="turn_on"]').click();
+  await card.locator('[data-chip="in-15"]').click();
+  await card.getByRole("button", { name: "Schedule", exact: true }).click();
+
+  const row = pendingRows(page).filter({ hasText: "Turn on · Desk lamp" });
+  await expect(row).toHaveCount(1);
+  await row.getByRole("button", { name: /cancel/i }).click();
+  await expect(row).toHaveCount(0);
+});
+
 test("a due schedule runs once and leaves the list without asking", async ({ page }) => {
   await openDashboard(page, LATER_DASHBOARD);
   const at = new Date(Date.now() + 6_000).toISOString();

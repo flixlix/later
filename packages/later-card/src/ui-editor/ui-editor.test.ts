@@ -1,4 +1,5 @@
 import { type HomeAssistant } from "custom-card-helpers";
+import { haValueChanged } from "@later/shared/testing/ha-events";
 import { expect, test } from "vite-plus/test";
 import { LaterCardEditor } from "./ui-editor";
 
@@ -12,9 +13,7 @@ const edit = async (value: Record<string, unknown>) => {
   editor.addEventListener("config-changed", (event) => {
     changes.push((event as CustomEvent<{ config: unknown }>).detail.config);
   });
-  editor.shadowRoot
-    ?.querySelector("ha-form")
-    ?.dispatchEvent(new CustomEvent("value-changed", { detail: { value } }));
+  editor.shadowRoot?.querySelector("ha-form")?.dispatchEvent(haValueChanged(value));
   editor.remove();
   return changes;
 };

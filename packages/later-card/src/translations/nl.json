@@ -1,0 +1,60 @@
+{
+  "card": {
+    "title": "Later",
+    "loading": "Laden…",
+    "nothing_scheduled": "Niets gepland",
+    "schedule_action": "Plan een actie",
+    "edit_schedule": "Wijzig planning",
+    "edit": "Wijzig",
+    "edit_named": "Wijzig {name}",
+    "cancel": "Annuleer",
+    "cancel_named": "Annuleer {name}",
+    "could_not_schedule": "Kon deze actie niet plannen",
+    "could_not_save": "Kon {name} niet opslaan",
+    "load_failed": "Later kon de planningen niet laden: {error}",
+    "not_installed": "De Later-integratie is niet geïnstalleerd. Deze kaart werkt alleen daarmee. Open in HACS Integraties, voeg Later toe, herstart Home Assistant en voeg Later daarna toe onder Instellingen → Apparaten en diensten.",
+    "open_in_hacs": "Open Later in HACS",
+    "not_set_up": "De Later-integratie is geïnstalleerd maar niet ingesteld. Voeg hem toe onder Instellingen → Apparaten en diensten → Voeg integratie toe → Later."
+  },
+  "form": {
+    "entity": "Entiteit",
+    "action": "Actie",
+    "service": "Dienst",
+    "other_service": "Andere dienst",
+    "data": "Dienstgegevens",
+    "when": "Wanneer",
+    "in": "Over {duration}",
+    "custom": "Aangepast",
+    "date_time": "Datum en tijd",
+    "minutes": "Minuten",
+    "date": "Datum",
+    "time": "Tijd",
+    "name": "Naam (optioneel)",
+    "runs": "Wordt uitgevoerd {when}, {relative}",
+    "passed": "Dat tijdstip is voorbij",
+    "save": "Bewaar",
+    "schedule": "Plan",
+    "cancel": "Annuleer"
+  },
+  "action": {
+    "turn_on": "Zet aan",
+    "turn_off": "Zet uit",
+    "toggle": "Schakelen"
+  },
+  "error": {
+    "pick_action": "Kies een actie",
+    "pick_entity": "Kies een entiteit",
+    "pick_service": "Kies een dienst",
+    "pick_when": "Kies wanneer",
+    "whole_minutes": "Minuten moeten een geheel getal groter dan 0 zijn",
+    "pick_date_time": "Kies een datum en tijd",
+    "in_the_past": "Kies een tijdstip in de toekomst"
+  },
+  "time": {
+    "in": "over {duration}"
+  },
+  "editor": {
+    "title": "Titel",
+    "entity": "Standaardentiteit (vooraf geselecteerd bij het plannen)"
+  }
+}

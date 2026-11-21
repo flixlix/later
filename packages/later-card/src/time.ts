@@ -1,26 +1,48 @@
-/** How the dashboard shows times: Home Assistant's time zone (or the browser's) and language. */
+import { type Localize } from "./localize";
+
+/** How the dashboard shows times: Home Assistant's time zone, and the user's language and hour cycle. */
 export type Clock = { timeZone: string; language: string; hour12?: boolean };
 
 const MINUTE = 60_000;
 
-/** `in 25 min`, `in 1 h 5 min`, `in 3 d`; `now` once due. */
-export function relativeLabel(runAt: Date, now: Date): string {
-  const minutes = Math.ceil((runAt.getTime() - now.getTime()) / MINUTE);
-  if (minutes <= 0) {
-    return "now";
-  }
+const unit = (value: number, name: "minute" | "hour" | "day", language: string): string =>
+  new Intl.NumberFormat(language, { style: "unit", unit: name, unitDisplay: "short" }).format(
+    value
+  );
+
+/** `25 min`, `1 hr 5 min`, `3 days` in `language`. */
+export function durationLabel(minutes: number, language: string): string {
   if (minutes < 60) {
-    return `in ${minutes} min`;
+    return unit(minutes, "minute", language);
   }
   if (minutes < 24 * 60) {
-    const hours = Math.floor(minutes / 60);
+    const hours = unit(Math.floor(minutes / 60), "hour", language);
     const rest = minutes % 60;
-    return rest === 0 ? `in ${hours} h` : `in ${hours} h ${rest} min`;
+    return rest === 0 ? hours : `${hours} ${unit(rest, "minute", language)}`;
   }
-  return `in ${Math.round(minutes / (24 * 60))} d`;
+  return unit(Math.round(minutes / (24 * 60)), "day", language);
 }
 
-const dayKey = (moment: Date, timeZone: string): string =>
+/** `today`, `tomorrow` (offset 0 and 1) in `language`. */
+export const dayWord = (offset: 0 | 1, language: string): string =>
+  new Intl.RelativeTimeFormat(language, { numeric: "auto" }).format(offset, "day");
+
+/** `in 25 min`, `in 1 hr 5 min`, `in 3 days`; `now` once due. */
+export function relativeLabel(
+  runAt: Date,
+  now: Date,
+  language: string,
+  localize: Localize
+): string {
+  const minutes = Math.ceil((runAt.getTime() - now.getTime()) / MINUTE);
+  if (minutes <= 0) {
+    return new Intl.RelativeTimeFormat(language, { numeric: "auto" }).format(0, "second");
+  }
+  return localize("time.in", { duration: durationLabel(minutes, language) });
+}
+
+/** `2026-11-21`: the day `moment` falls on in `timeZone`. */
+export const dayKey = (moment: Date, timeZone: string): string =>
   new Intl.DateTimeFormat("en-CA", {
     timeZone,
     year: "numeric",
@@ -50,7 +72,7 @@ export function clockLabel(runAt: Date, now: Date, clock: Clock): string {
     return timeOfDay(runAt, clock);
   }
   if (day === dayKey(new Date(now.getTime() + 24 * 60 * MINUTE), clock.timeZone)) {
-    return `tomorrow ${timeOfDay(runAt, clock)}`;
+    return `${dayWord(1, clock.language)} ${timeOfDay(runAt, clock)}`;
   }
   const date = new Intl.DateTimeFormat(clock.language, {
     timeZone: clock.timeZone,
@@ -72,26 +94,57 @@ export function minutesOfDay(time: string): number | undefined {
   return hours < 24 && minutes < 60 ? hours * 60 + minutes : undefined;
 }
 
-const nowMinutesOfDay = (now: Date, timeZone: string): number => {
+/** What a wall clock in `timeZone` reads at `moment`, as if that reading were UTC. */
+const wallClockAsUtc = (moment: Date, timeZone: string): number => {
   const parts = new Intl.DateTimeFormat("en-GB", {
     timeZone,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
     hour: "2-digit",
     minute: "2-digit",
     hour12: false,
-  }).formatToParts(now);
+  }).formatToParts(moment);
   const part = (type: string) => Number(parts.find((p) => p.type === type)?.value ?? 0);
   // Some engines format midnight as 24:00.
-  return (part("hour") % 24) * 60 + part("minute");
+  return Date.UTC(part("year"), part("month") - 1, part("day"), part("hour") % 24, part("minute"));
 };
 
-/** Whether a clock time picked now means today or tomorrow, as the integration decides. */
-export function clockTimeDay(time: string, now: Date, timeZone: string): "today" | "tomorrow" {
-  const picked = minutesOfDay(time) ?? 0;
-  return picked > nowMinutesOfDay(now, timeZone) ? "today" : "tomorrow";
+/**
+ * The moment a wall clock in `timeZone` reads `date` (`2026-11-21`) and `time` (`HH:MM`), or
+ * undefined if either does not parse. A time skipped by a daylight saving change lands an hour
+ * later.
+ */
+export function zonedMoment(date: string, time: string, timeZone: string): Date | undefined {
+  const day = /^(\d{4})-(\d{2})-(\d{2})$/.exec(date);
+  const minutes = minutesOfDay(time);
+  if (!day || minutes === undefined) {
+    return undefined;
+  }
+  const wanted = Date.UTC(Number(day[1]), Number(day[2]) - 1, Number(day[3])) + minutes * MINUTE;
+  // Guess with the offset at `wanted`, then correct once with the offset at the guess.
+  const firstGuess = wanted - (wallClockAsUtc(new Date(wanted), timeZone) - wanted);
+  return new Date(wanted - (wallClockAsUtc(new Date(firstGuess), timeZone) - firstGuess));
 }
 
-/** The next full hour as `HH:00`, a default for the clock time. */
-export function nextFullHour(now: Date, timeZone: string): string {
-  const hour = (Math.floor(nowMinutesOfDay(now, timeZone) / 60) + 1) % 24;
-  return `${String(hour).padStart(2, "0")}:00`;
+/** The next full hour in `timeZone`: the default date and time for a schedule. */
+export function nextFullHour(now: Date, timeZone: string): { date: string; time: string } {
+  const hour = (Math.floor(wallClockAsUtc(now, timeZone) / (60 * MINUTE)) + 1) % 24;
+  return {
+    date: dayKey(new Date(now.getTime() + 60 * MINUTE), timeZone),
+    time: `${String(hour).padStart(2, "0")}:00`,
+  };
 }
+
+/** `HH:MM` of `moment` in `timeZone`, as a time field holds it. */
+export function clockTime(moment: Date, timeZone: string): string {
+  const minutes = Math.floor(wallClockAsUtc(moment, timeZone) / MINUTE) % (24 * 60);
+  return `${String(Math.floor(minutes / 60)).padStart(2, "0")}:${String(minutes % 60).padStart(2, "0")}`;
+}
+
+/** Whether a due time picked to the minute is already past; the current minute is not. */
+export const hasPassed = (moment: Date, now: Date): boolean =>
+  moment.getTime() < now.getTime() - (now.getTime() % MINUTE);
+
+/** Milliseconds until the next minute starts. */
+export const msToNextMinute = (now: Date): number => MINUTE - (now.getTime() % MINUTE);

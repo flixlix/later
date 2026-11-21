@@ -10,4 +10,5 @@ services:
       - ./.hass_dev:/config
       - ./custom_components/later:/config/custom_components/later
       # The dev build of the card over the committed release build; a rebuild shows on reload.
-      - ./packages/later-card/dist/later-card.js:/config/custom_components/later/www/later-card.js:ro
+      # The folder, not the file: a rebuild replaces the file, and a file mount keeps the old one.
+      - ./packages/later-card/dist:/config/custom_components/later/www:ro

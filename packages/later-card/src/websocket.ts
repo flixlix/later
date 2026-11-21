@@ -10,6 +10,13 @@ export const subscribeSchedules = (
 export const addSchedule = (hass: HomeAssistant, request: AddRequest): Promise<Schedule> =>
   hass.callWS<Schedule>({ type: "later/add", ...request });
 
+export const updateSchedule = (
+  hass: HomeAssistant,
+  scheduleId: string,
+  request: AddRequest
+): Promise<Schedule> =>
+  hass.callWS<Schedule>({ type: "later/update", schedule_id: scheduleId, ...request });
+
 export const cancelSchedule = (hass: HomeAssistant, scheduleId: string): Promise<Schedule> =>
   hass.callWS<Schedule>({ type: "later/cancel", schedule_id: scheduleId });
 

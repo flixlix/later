@@ -25,7 +25,7 @@ export const schedule = (
 
 /**
  * The `later/*` websocket API of the integration, in memory: records every message, answers
- * add and cancel, and pushes changes to subscribers.
+ * add, update and cancel, and pushes changes to subscribers.
  */
 export class FakeLater implements FakeWebsocket {
   public readonly messages: MessageBase[] = [];
@@ -50,6 +50,16 @@ export class FakeLater implements FakeWebsocket {
       this.schedules = [...this.schedules, created];
       this.emit({ type: "created", schedule: created, schedules: this.schedules });
       return Promise.resolve(created);
+    }
+    if (message.type === "later/update") {
+      const old = this.schedules.find((s) => s.id === message.schedule_id);
+      if (!old) {
+        return Promise.reject({ code: "not_found", message: "No pending schedule" });
+      }
+      const updated = { ...old, name: typeof message.name === "string" ? message.name : old.name };
+      this.schedules = this.schedules.map((s) => (s === old ? updated : s));
+      this.emit({ type: "updated", schedule: updated, schedules: this.schedules });
+      return Promise.resolve(updated);
     }
     if (message.type === "later/cancel") {
       const cancelled = this.schedules.find((s) => s.id === message.schedule_id);

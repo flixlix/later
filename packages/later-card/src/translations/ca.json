@@ -1,0 +1,60 @@
+{
+  "card": {
+    "title": "Later",
+    "loading": "Carregant…",
+    "nothing_scheduled": "No hi ha res programat",
+    "schedule_action": "Programa una acció",
+    "edit_schedule": "Edita la programació",
+    "edit": "Edita",
+    "edit_named": "Edita {name}",
+    "cancel": "Cancel·la",
+    "cancel_named": "Cancel·la {name}",
+    "could_not_schedule": "No s'ha pogut programar aquesta acció",
+    "could_not_save": "No s'ha pogut desar {name}",
+    "load_failed": "Later no ha pogut carregar les programacions: {error}",
+    "not_installed": "La integració Later no està instal·lada. Aquesta targeta només funciona amb ella. A HACS, obre Integracions, afegeix Later, reinicia Home Assistant i després afegeix Later a Configuració → Dispositius i serveis.",
+    "open_in_hacs": "Obre Later a HACS",
+    "not_set_up": "La integració Later està instal·lada però no configurada. Afegeix-la a Configuració → Dispositius i serveis → Afegeix integració → Later."
+  },
+  "form": {
+    "entity": "Entitat",
+    "action": "Acció",
+    "service": "Servei",
+    "other_service": "Un altre servei",
+    "data": "Dades del servei",
+    "when": "Quan",
+    "in": "D'aquí a {duration}",
+    "custom": "Personalitzat",
+    "date_time": "Data i hora",
+    "minutes": "Minuts",
+    "date": "Data",
+    "time": "Hora",
+    "name": "Nom (opcional)",
+    "runs": "S'executa {when}, {relative}",
+    "passed": "Aquesta hora ja ha passat",
+    "save": "Desa",
+    "schedule": "Programa",
+    "cancel": "Cancel·la"
+  },
+  "action": {
+    "turn_on": "Activa",
+    "turn_off": "Desactiva",
+    "toggle": "Commuta"
+  },
+  "error": {
+    "pick_action": "Tria una acció",
+    "pick_entity": "Tria una entitat",
+    "pick_service": "Tria un servei",
+    "pick_when": "Tria quan",
+    "whole_minutes": "Els minuts han de ser un nombre enter més gran que 0",
+    "pick_date_time": "Tria una data i una hora",
+    "in_the_past": "Tria una hora futura"
+  },
+  "time": {
+    "in": "d'aquí a {duration}"
+  },
+  "editor": {
+    "title": "Títol",
+    "entity": "Entitat per defecte (preseleccionada en programar)"
+  }
+}

@@ -1,34 +1,45 @@
 import { type HomeAssistant } from "custom-card-helpers";
 import { LitElement, css, html, nothing, type TemplateResult } from "lit";
 import { property, state } from "lit/decorators.js";
-import { addRequest, type Draft, shortcutLabel, shortcutsFor, type When } from "./request";
-import { clockTimeDay, nextFullHour } from "./time";
-import { type AddRequest, type Shortcut } from "./types";
+import { type Localize, localizer } from "./localize";
+import { addRequest, type Draft, draftOf, shortcutLabel, shortcutsFor, type When } from "./request";
+import {
+  type Clock,
+  clockLabel,
+  dayKey,
+  dayWord,
+  durationLabel,
+  hasPassed,
+  nextFullHour,
+  relativeLabel,
+  zonedMoment,
+} from "./time";
+import { type AddRequest, type Schedule, type Shortcut } from "./types";
 
 type FormValue = Record<string, unknown>;
 
 const MINUTE_CHIPS = [15, 30, 60];
 
+/** Translation keys of the `ha-form` field labels. */
 const LABELS: Record<string, string> = {
-  entity_id: "Entity",
-  service: "Service",
-  data: "Service data",
-  minutes: "Minutes",
-  time: "Time",
-  name: "Name (optional)",
+  entity_id: "form.entity",
+  service: "form.service",
+  data: "form.data",
+  minutes: "form.minutes",
+  date: "form.date",
+  time: "form.time",
+  name: "form.name",
 };
-
-const computeLabel = (schema: { name: string }): string => LABELS[schema.name] ?? schema.name;
-
-const minutesLabel = (minutes: number): string =>
-  minutes % 60 === 0 ? `${minutes / 60} h` : `${minutes} min`;
 
 const isRecord = (value: unknown): value is FormValue =>
   typeof value === "object" && value !== null && !Array.isArray(value);
 
-/** The value an `ha-form` reports in its `value-changed` event. */
+/**
+ * The value an `ha-form` reports in its `value-changed` event: a plain `Event` with `detail`
+ * assigned by Home Assistant's `fireEvent`, not a `CustomEvent`.
+ */
 const formValue = (event: Event): FormValue =>
-  event instanceof CustomEvent && isRecord(event.detail) && isRecord(event.detail.value)
+  "detail" in event && isRecord(event.detail) && isRecord(event.detail.value)
     ? event.detail.value
     : {};
 
@@ -38,46 +49,68 @@ const stringField = (value: FormValue, key: string): string | undefined => {
 };
 
 /**
- * `<later-create-form>`: pick an entity, an action and when, then confirm. Hands the `later/add` payload to `submit`
- * and shows its error, if any.
+ * `<later-create-form>`: pick an entity, an action and when, then confirm. Creates a schedule, or
+ * edits `schedule` when given. Hands the payload to `submit` and shows its error, if any.
  */
 export class LaterCreateForm extends LitElement {
   @property({ attribute: false }) public hass!: HomeAssistant;
   @property({ attribute: false }) public submit!: (request: AddRequest) => Promise<void>;
   @property({ attribute: false }) public entity?: string;
-  /** Time zone clock times are picked in: Home Assistant's. */
-  @property({ attribute: false }) public timeZone = "UTC";
+  /** The schedule to edit; a new one without. */
+  @property({ attribute: false }) public schedule?: Schedule;
+  /** The dashboard's clock: dates and times are picked and shown on it. */
+  @property({ attribute: false }) public clock: Clock = { timeZone: "UTC", language: "en" };
 
   @state() private _draft: Draft = {};
   @state() private _customMinutes = false;
   @state() private _error?: string;
   @state() private _busy = false;
 
+  private get _localize(): Localize {
+    return localizer(this.clock.language);
+  }
+
+  private _computeLabel = (schema: { name: string }): string => {
+    const key = LABELS[schema.name];
+    return key ? this._localize(key) : schema.name;
+  };
+
   public connectedCallback(): void {
     super.connectedCallback();
-    if (this.entity && !this._draft.entity) {
+    if (this.schedule && !this._draft.when) {
+      this._draft = draftOf(this.schedule, this.clock.timeZone);
+    } else if (this.entity && !this._draft.entity) {
       this._setEntity(this.entity);
     }
   }
 
   protected render(): TemplateResult {
+    const t = this._localize;
     return html`
       <div class="form">
         ${this._field("entity_id", { entity: {} }, { entity_id: this._draft.entity ?? "" }, (v) =>
           this._setEntity(stringField(v, "entity_id"))
         )}
-        <div class="group" role="group" aria-label="Action">${this._actionChips()}</div>
+        <div class="section">
+          <span class="label" id="action-label">${t("form.action")}</span>
+          <div class="segmented" role="group" aria-labelledby="action-label">
+            ${this._actionChips()}
+          </div>
+        </div>
         ${this._draft.action === "service" ? this._serviceFields() : nothing}
-        <div class="group" role="group" aria-label="When">${this._whenChips()}</div>
+        <div class="section">
+          <span class="label" id="when-label">${t("form.when")}</span>
+          <div class="group" role="group" aria-labelledby="when-label">${this._whenChips()}</div>
+        </div>
         ${this._whenField()}
         ${this._field("name", { text: {} }, { name: this._draft.name ?? "" }, (v) =>
           this._update({ name: stringField(v, "name") })
         )}
         ${this._error ? html`<p class="error" role="alert">${this._error}</p>` : nothing}
         <div class="actions">
-          <button class="text" type="button" @click=${this._cancel}>Cancel</button>
+          <button class="text" type="button" @click=${this._cancel}>${t("form.cancel")}</button>
           <button class="primary" type="button" ?disabled=${this._busy} @click=${this._confirm}>
-            Schedule
+            ${t(this.schedule ? "form.save" : "form.schedule")}
           </button>
         </div>
       </div>
@@ -95,14 +128,20 @@ export class LaterCreateForm extends LitElement {
       .hass=${this.hass}
       .data=${data}
       .schema=${[{ name, selector }]}
-      .computeLabel=${computeLabel}
+      .computeLabel=${this._computeLabel}
       @value-changed=${(event: Event) => onChange(formValue(event))}
     ></ha-form>`;
   }
 
-  private _chip(label: string, pressed: boolean, onClick: () => void, name: string) {
+  private _chip(
+    label: string,
+    pressed: boolean,
+    onClick: () => void,
+    name: string,
+    kind: "chip" | "segment" = "chip"
+  ) {
     return html`<button
-      class="chip"
+      class=${kind}
       type="button"
       data-chip=${name}
       aria-pressed=${pressed ? "true" : "false"}
@@ -116,17 +155,19 @@ export class LaterCreateForm extends LitElement {
     const shortcuts = shortcutsFor(this._draft.entity, this.hass.services);
     return html`${shortcuts.map((shortcut) =>
       this._chip(
-        shortcutLabel(shortcut),
+        shortcutLabel(shortcut, this._localize),
         this._draft.action === shortcut,
         () => this._update({ action: shortcut }),
-        shortcut
+        shortcut,
+        "segment"
       )
     )}
     ${this._chip(
-      shortcuts.length ? "Other service" : "Service",
+      this._localize(shortcuts.length ? "form.other_service" : "form.service"),
       this._draft.action === "service",
       () => this._update({ action: "service" }),
-      "service"
+      "service",
+      "segment"
     )}`;
   }
 
@@ -151,7 +192,7 @@ export class LaterCreateForm extends LitElement {
     const when = this._draft.when;
     const minutesChips = MINUTE_CHIPS.map((minutes) =>
       this._chip(
-        minutesLabel(minutes),
+        this._localize("form.in", { duration: durationLabel(minutes, this.clock.language) }),
         !this._customMinutes && when?.kind === "in" && when.minutes === minutes,
         () => this._setWhen({ kind: "in", minutes }, false),
         `in-${minutes}`
@@ -159,15 +200,21 @@ export class LaterCreateForm extends LitElement {
     );
     return html`${minutesChips}
     ${this._chip(
-      "Other",
+      this._localize("form.custom"),
       this._customMinutes && when?.kind === "in",
       () => this._setWhen({ kind: "in", minutes: when?.kind === "in" ? when.minutes : 45 }, true),
       "in-custom"
     )}
     ${this._chip(
-      "At time",
+      this._localize("form.date_time"),
       when?.kind === "at",
-      () => this._setWhen({ kind: "at", time: nextFullHour(new Date(), this.timeZone) }, false),
+      () =>
+        this._setWhen(
+          when?.kind === "at"
+            ? when
+            : { kind: "at", ...nextFullHour(new Date(), this.clock.timeZone) },
+          false
+        ),
       "at"
     )}`;
   }
@@ -183,13 +230,34 @@ export class LaterCreateForm extends LitElement {
       );
     }
     if (when?.kind === "at") {
-      const day = clockTimeDay(when.time, new Date(), this.timeZone);
-      return html`${this._field("time", { time: { no_second: true } }, { time: when.time }, (v) =>
-          this._setWhen({ kind: "at", time: stringField(v, "time") ?? when.time }, false)
+      return html`${this._field("date", { date: {} }, { date: when.date }, (v) =>
+          this._patchDueTime({ date: stringField(v, "date") })
         )}
-        <p class="hint">Runs ${day} at ${when.time.slice(0, 5)}</p>`;
+        ${this._field("time", { time: { no_second: true } }, { time: when.time }, (v) =>
+          this._patchDueTime({ time: stringField(v, "time") })
+        )}
+        <p class="hint">${this._dueHint(when.date, when.time)}</p>`;
     }
     return nothing;
+  }
+
+  /** `Runs tomorrow 07:30, in 12 h 30 min` on the dashboard's clock. */
+  private _dueHint(date: string, time: string): string {
+    const moment = zonedMoment(date, time, this.clock.timeZone);
+    if (!moment) {
+      return "";
+    }
+    const now = new Date();
+    if (hasPassed(moment, now)) {
+      return this._localize("form.passed");
+    }
+    const { language, timeZone } = this.clock;
+    const today = dayKey(moment, timeZone) === dayKey(now, timeZone);
+    const when = clockLabel(moment, now, this.clock);
+    return this._localize("form.runs", {
+      when: today ? `${dayWord(0, language)} ${when}` : when,
+      relative: relativeLabel(moment, now, language, this._localize),
+    });
   }
 
   private _setEntity(entity: string | undefined) {
@@ -208,6 +276,17 @@ export class LaterCreateForm extends LitElement {
     return shortcuts.includes("turn_off") ? "turn_off" : shortcuts[0];
   }
 
+  /** Changes the date or the time; a cleared field keeps what it held. */
+  private _patchDueTime(patch: { date?: string; time?: string }) {
+    const when = this._draft.when;
+    if (when?.kind === "at") {
+      this._setWhen(
+        { kind: "at", date: patch.date ?? when.date, time: patch.time ?? when.time },
+        false
+      );
+    }
+  }
+
   private _setWhen(when: When, custom: boolean) {
     this._customMinutes = custom;
     this._update({ when });
@@ -223,10 +302,14 @@ export class LaterCreateForm extends LitElement {
   };
 
   private _confirm = async (): Promise<void> => {
-    const request = addRequest(this._draft);
+    const request = addRequest(this._draft, new Date(), this.clock.timeZone);
     if (typeof request === "string") {
-      this._error = request;
+      this._error = this._localize(request);
       return;
+    }
+    if (this.schedule && request.name === this.schedule.name) {
+      // Unchanged: the integration then renames a default-named schedule to match the edit.
+      delete request.name;
     }
     this._busy = true;
     try {
@@ -247,10 +330,44 @@ export class LaterCreateForm extends LitElement {
       flex-direction: column;
       gap: 12px;
     }
+    .section {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .label {
+      color: var(--secondary-text-color);
+      font-size: var(--ha-font-size-s, 12px);
+      font-weight: var(--ha-font-weight-medium, 500);
+    }
     .group {
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
+    }
+    .segmented {
+      display: flex;
+      border: 1px solid var(--divider-color, #e0e0e0);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .segment {
+      flex: 1 1 0;
+      min-width: 0;
+      border: none;
+      background: none;
+      color: var(--primary-text-color);
+      padding: 8px 6px;
+      font-size: var(--ha-font-size-m, 14px);
+      overflow-wrap: anywhere;
+    }
+    .segment + .segment {
+      border-left: 1px solid var(--divider-color, #e0e0e0);
+    }
+    .segment[aria-pressed="true"] {
+      background: rgba(var(--rgb-primary-color, 3, 169, 244), 0.15);
+      color: var(--primary-color);
+      font-weight: var(--ha-font-weight-medium, 500);
     }
     button {
       font: inherit;
