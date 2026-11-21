@@ -22,6 +22,7 @@
     "start:hass": "pnpm build:card && docker compose -f compose.hass.yaml up",
     "hass:up": "pnpm build:card && docker compose -f compose.hass.yaml up -d && pnpm hass:bootstrap",
     "hass:bootstrap": "vpx ./e2e/scripts/bootstrap.ts",
+    "brand": "vpx ./e2e/scripts/render-brand.ts",
     "hass:down": "docker compose -f compose.hass.yaml down",
     "hass:logs": "docker compose -f compose.hass.yaml logs -f",
     "hass:restart": "docker compose -f compose.hass.yaml restart",
