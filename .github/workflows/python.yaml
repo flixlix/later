@@ -56,6 +56,8 @@ jobs:
         uses: home-assistant/actions/hassfest@master
 
   hacs:
+    # The HACS action only validates public repositories; it runs once flixlix/later is public.
+    if: ${{ !github.event.repository.private }}
     runs-on: ubuntu-latest
     steps:
       - name: HACS validation
