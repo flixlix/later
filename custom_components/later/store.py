@@ -44,7 +44,7 @@ class LaterStorage(Store[StoredSchedules]):
 
 
 class ScheduleStore:
-    """Load, create, delete and list schedules; every change is saved at once."""
+    """Load, put, delete and list schedules; every change is saved at once."""
 
     def __init__(self, hass: HomeAssistant) -> None:
         """Bind to the storage file."""
@@ -65,8 +65,8 @@ class ScheduleStore:
         """Pending schedules, soonest first."""
         return sorted(self._schedules.values(), key=lambda s: (s["run_at"], s["id"]))
 
-    async def async_create(self, schedule: Schedule) -> None:
-        """Add a schedule and save."""
+    async def async_put(self, schedule: Schedule) -> None:
+        """Add a schedule, or replace the one with its id, and save."""
         self._schedules[schedule["id"]] = schedule
         await self._async_save()
 

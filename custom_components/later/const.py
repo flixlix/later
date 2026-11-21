@@ -22,6 +22,7 @@ SERVICE_RUN_NOW: Final = "run_now"
 
 WS_LIST: Final = "later/list"
 WS_ADD: Final = "later/add"
+WS_UPDATE: Final = "later/update"
 WS_CANCEL: Final = "later/cancel"
 WS_SUBSCRIBE: Final = "later/subscribe"
 

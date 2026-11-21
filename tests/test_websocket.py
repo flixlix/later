@@ -85,6 +85,94 @@ async def test_cancel_unknown_id(
     assert response["error"]["code"] == "not_found"
 
 
+@pytest.mark.usefixtures("time_zone")
+async def test_update_replaces_action_and_due_time(
+    hass: HomeAssistant,
+    setup_later: Setup,
+    advance: Advance,
+    hass_ws_client: WebSocketGenerator,
+) -> None:
+    """Editing keeps the id, moves the timer and renames a default-named schedule."""
+    await setup_later()
+    turn_on = async_mock_service(hass, "switch", "turn_on")
+    turn_off = async_mock_service(hass, "switch", "turn_off")
+    client = await hass_ws_client(hass)
+    await client.send_json_auto_id(
+        {
+            "type": "later/add",
+            "entity_id": "switch.heater",
+            "action": "turn_off",
+            "in": 5,
+        }
+    )
+    original = (await client.receive_json())["result"]
+
+    await client.send_json_auto_id(
+        {
+            "type": "later/update",
+            "schedule_id": original["id"],
+            "entity_id": "switch.heater",
+            "action": "turn_on",
+            "at": "2026-11-22 07:30",
+        }
+    )
+    response = await client.receive_json()
+    assert response["success"], response
+    updated = response["result"]
+
+    assert updated["id"] == original["id"]
+    assert updated["created_at"] == original["created_at"]
+    assert updated["service"] == "switch.turn_on"
+    assert updated["run_at"] == "2026-11-22T06:30:00+00:00"
+    assert updated["name"] == "switch.heater: turn on at 07:30"
+    await client.send_json_auto_id({"type": "later/list"})
+    assert (await client.receive_json())["result"] == [updated]
+
+    await advance(timedelta(minutes=10))
+    assert turn_off == []
+    await advance(datetime(2026, 11, 22, 6, 30, 1, tzinfo=dt_util.UTC))
+    assert len(turn_on) == 1
+
+
+async def test_update_keeps_a_picked_name(
+    hass: HomeAssistant, setup_later: Setup, hass_ws_client: WebSocketGenerator
+) -> None:
+    """A name someone picked survives an edit that sends no name."""
+    await setup_later()
+    client = await hass_ws_client(hass)
+    await client.send_json_auto_id(
+        {"type": "later/add", "service": "script.bedtime", "in": 5, "name": "Bedtime"}
+    )
+    original = (await client.receive_json())["result"]
+
+    await client.send_json_auto_id(
+        {
+            "type": "later/update",
+            "schedule_id": original["id"],
+            "service": "script.bedtime",
+            "in": 30,
+        }
+    )
+
+    assert (await client.receive_json())["result"]["name"] == "Bedtime"
+
+
+async def test_update_unknown_id(
+    hass: HomeAssistant, setup_later: Setup, hass_ws_client: WebSocketGenerator
+) -> None:
+    """Editing a schedule that already ran or was cancelled is not_found."""
+    await setup_later()
+    client = await hass_ws_client(hass)
+
+    await client.send_json_auto_id(
+        {"type": "later/update", "schedule_id": "gone", "service": "a.b", "in": 5}
+    )
+
+    response = await client.receive_json()
+    assert not response["success"]
+    assert response["error"]["code"] == "not_found"
+
+
 async def test_subscribe_pushes_every_change(
     hass: HomeAssistant,
     setup_later: Setup,

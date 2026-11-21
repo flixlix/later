@@ -1,4 +1,4 @@
-"""Websocket API the card uses: list, add, cancel and subscribe."""
+"""Websocket API the card uses: list, add, update, cancel and subscribe."""
 
 from typing import Any
 
@@ -7,7 +7,15 @@ from homeassistant.core import HomeAssistant, callback
 from homeassistant.exceptions import HomeAssistantError
 import voluptuous as vol
 
-from .const import DOMAIN, SOURCE_CARD, WS_ADD, WS_CANCEL, WS_LIST, WS_SUBSCRIBE
+from .const import (
+    DOMAIN,
+    SOURCE_CARD,
+    WS_ADD,
+    WS_CANCEL,
+    WS_LIST,
+    WS_SUBSCRIBE,
+    WS_UPDATE,
+)
 from .schedules import ScheduleChange, Schedules
 from .schema import ADD_FIELDS, ADD_SCHEMA
 
@@ -17,6 +25,7 @@ def async_register_websocket(hass: HomeAssistant) -> None:
     """Register the `later/*` commands."""
     websocket_api.async_register_command(hass, websocket_list)
     websocket_api.async_register_command(hass, websocket_add)
+    websocket_api.async_register_command(hass, websocket_update)
     websocket_api.async_register_command(hass, websocket_cancel)
     websocket_api.async_register_command(hass, websocket_subscribe)
 
@@ -61,6 +70,41 @@ async def websocket_add(
         return
     try:
         schedule = await schedules.async_create(validated, source=SOURCE_CARD)
+    except HomeAssistantError as err:
+        connection.send_error(msg["id"], websocket_api.ERR_INVALID_FORMAT, str(err))
+        return
+    connection.send_result(msg["id"], schedule)
+
+
+@websocket_api.websocket_command(
+    {vol.Required("type"): WS_UPDATE, vol.Required("schedule_id"): str, **ADD_FIELDS}
+)
+@websocket_api.async_response
+async def websocket_update(
+    hass: HomeAssistant, connection: websocket_api.ActiveConnection, msg: dict[str, Any]
+) -> None:
+    """Replace a pending schedule; the fields of `later/add` plus `schedule_id`."""
+    if not (schedules := _loaded(hass, connection, msg["id"])):
+        return
+    request = {
+        key: value
+        for key, value in msg.items()
+        if key not in ("id", "type", "schedule_id")
+    }
+    try:
+        validated = ADD_SCHEMA(request)
+    except vol.Invalid as err:
+        connection.send_error(msg["id"], websocket_api.ERR_INVALID_FORMAT, str(err))
+        return
+    if schedules.get(msg["schedule_id"]) is None:
+        connection.send_error(
+            msg["id"],
+            websocket_api.ERR_NOT_FOUND,
+            f"No pending schedule with id {msg['schedule_id']}",
+        )
+        return
+    try:
+        schedule = await schedules.async_update(msg["schedule_id"], validated)
     except HomeAssistantError as err:
         connection.send_error(msg["id"], websocket_api.ERR_INVALID_FORMAT, str(err))
         return

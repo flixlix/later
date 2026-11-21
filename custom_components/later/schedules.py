@@ -29,7 +29,9 @@ from .store import Schedule, ScheduleStore
 
 _LOGGER = logging.getLogger(__name__)
 
-type ChangeType = Literal["created", "cancelled", "ran", "late_ran", "failed"]
+type ChangeType = Literal[
+    "created", "updated", "cancelled", "ran", "late_ran", "failed"
+]
 
 
 class ScheduleChange(TypedDict):
@@ -57,6 +59,10 @@ class Schedules:
         self._timers: dict[str, CALLBACK_TYPE] = {}
         self._listeners: set[ChangeListener] = set()
         self._started = False
+
+    def get(self, schedule_id: str) -> Schedule | None:
+        """The pending schedule with this id, if any."""
+        return self._store.get(schedule_id)
 
     def list(self) -> list[Schedule]:
         """Pending schedules, soonest first."""
@@ -92,32 +98,77 @@ class Schedules:
     async def async_create(self, request: dict[str, Any], *, source: str) -> Schedule:
         """Store a schedule from a validated `ADD_SCHEMA` request and arm it."""
         now = dt_util.utcnow()
+        schedule = self._build(
+            request,
+            schedule_id=self._new_id(),
+            created_at=now,
+            source="card" if source == "card" else "service",
+            name=request.get(ATTR_NAME),
+        )
+        await self._store.async_put(schedule)
+        if self._started:
+            self._arm(schedule)
+        self._notify("created", schedule)
+        return schedule
+
+    async def async_update(self, schedule_id: str, request: dict[str, Any]) -> Schedule:
+        """Replace a pending schedule's action, due time and name; it keeps its id.
+
+        Without a name in `request`, a schedule that had the default name gets the default
+        name of its new action and due time; a name someone picked stays.
+        """
+        old = self._store.get(schedule_id)
+        if old is None:
+            raise _not_found(schedule_id)
+        old_default = self._default_name(
+            old["entity_id"],
+            old["service"],
+            dt_util.parse_datetime(old["run_at"], raise_on_error=True),
+        )
+        schedule = self._build(
+            request,
+            schedule_id=schedule_id,
+            created_at=dt_util.parse_datetime(old["created_at"], raise_on_error=True),
+            source=old["source"],
+            name=request.get(ATTR_NAME)
+            or (None if old["name"] == old_default else old["name"]),
+        )
+        await self._store.async_put(schedule)
+        if self._started:
+            self._arm(schedule)
+        self._notify("updated", schedule)
+        return schedule
+
+    def _build(
+        self,
+        request: dict[str, Any],
+        *,
+        schedule_id: str,
+        created_at: datetime,
+        source: Literal["card", "service"],
+        name: str | None,
+    ) -> Schedule:
+        """A schedule from a validated `ADD_SCHEMA` request; the default name without `name`."""
         run_at = due_time(
             at=request.get(ATTR_AT),
             minutes=request.get(ATTR_IN),
-            now=now,
+            now=dt_util.utcnow(),
             time_zone=dt_util.get_default_time_zone(),
         )
         entity_id: str | None = request.get(ATTR_ENTITY_ID)
         service = request.get(ATTR_SERVICE) or _shortcut_service(
             request[ATTR_ACTION], entity_id
         )
-        schedule: Schedule = {
-            "id": self._new_id(),
-            "name": request.get(ATTR_NAME)
-            or self._default_name(entity_id, service, run_at),
+        return {
+            "id": schedule_id,
+            "name": name or self._default_name(entity_id, service, run_at),
             "run_at": _iso(run_at),
-            "created_at": _iso(now),
+            "created_at": _iso(created_at),
             "service": service,
             "data": dict(request[ATTR_DATA]),
             "entity_id": entity_id,
-            "source": "card" if source == "card" else "service",
+            "source": source,
         }
-        await self._store.async_create(schedule)
-        if self._started:
-            self._arm(schedule)
-        self._notify("created", schedule)
-        return schedule
 
     async def async_cancel(self, schedule_id: str) -> Schedule:
         """Delete a schedule without running it."""
