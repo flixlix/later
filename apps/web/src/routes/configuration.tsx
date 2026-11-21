@@ -61,10 +61,18 @@ entity: switch.heater
       <Table head={["Option", "Default", "Description"]} rows={CARD_OPTIONS} />
       <p>
         The card lists pending schedules, soonest first, with the due time (“20:00”, “tomorrow
-        07:00”), how long until then, the target and the action. The ✕ cancels a schedule without
-        running it. The + opens the form: pick an entity, an action (turn on, turn off, toggle or
-        any service with data) and when (15, 30 or 60 minutes, another number of minutes, or a clock
-        time), optionally a name, then <b>Schedule</b>.
+        07:00”), how long until then, the target and the action. Times are in the Home Assistant
+        time zone, on your 12- or 24-hour setting. The ✕ cancels a schedule without running it. The
+        + opens a dialog: pick an entity, an action (turn on, turn off, toggle or any service with
+        data) and when (in 15, 30 or 60 minutes, another number of minutes, or any date and time),
+        optionally a name, then <b>Schedule</b>. Click a schedule to edit it in the same dialog; a
+        schedule with the default name is renamed to match the change, a name you picked stays.
+      </p>
+      <p>
+        The card speaks your Home Assistant language: Catalan, Czech, Danish, Dutch, English,
+        Finnish, French, German, Hindi, Italian, Polish, Portuguese (Portugal and Brazil), Russian,
+        Slovak, Spanish, Swedish and Ukrainian; anything else falls back to English. The
+        integration's setup, services and errors are translated into the same languages.
       </p>
       <h2 id="services">Services</h2>
       <h3>later.add</h3>
@@ -107,10 +115,11 @@ source: service          # or card
       <h2 id="websocket">Websocket API</h2>
       <p>
         The card uses <code>later/list</code>, <code>later/add</code> (the fields of{" "}
-        <code>later.add</code>), <code>later/cancel</code> (<code>schedule_id</code>) and{" "}
+        <code>later.add</code>), <code>later/update</code> (<code>schedule_id</code> and the fields
+        of <code>later.add</code>), <code>later/cancel</code> (<code>schedule_id</code>) and{" "}
         <code>later/subscribe</code>, which sends the pending list at once and again after every
-        change, with the change type: <code>created</code>, <code>cancelled</code>, <code>ran</code>
-        , <code>late_ran</code> or <code>failed</code>.
+        change, with the change type: <code>created</code>, <code>updated</code>,{" "}
+        <code>cancelled</code>, <code>ran</code>, <code>late_ran</code> or <code>failed</code>.
       </p>
     </Page>
   );

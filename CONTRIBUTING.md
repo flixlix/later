@@ -70,6 +70,14 @@ End to end, against `pnpm hass:up`:
 pnpm e2e
 ```
 
+## Translations
+
+The card's strings live in `packages/later-card/src/translations/<language>.json`, the integration's in `custom_components/later/strings.json` (English) and `custom_components/later/translations/<language>.json`, both named by Home Assistant language codes (`pt-BR`, `uk`). A new string goes into every file of its side; a new language gets a file on both sides and an import in `packages/later-card/src/localize.ts`. Tests fail on missing keys, lost placeholders or a language only one side has.
+
+## Logo
+
+`docs/brand/icon.svg` is the source. `pnpm brand` renders it to `custom_components/later/brand/icon.png` and `icon@2x.png`, which Home Assistant shows for the integration.
+
 ## The bundled card
 
 Home Assistant loads the card from `custom_components/later/www/later-card.js`, which is committed so HACS installs it with the integration. When a PR changes card source, run:

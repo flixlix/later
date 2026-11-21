@@ -1,3 +1,5 @@
+<img src="docs/brand/icon.svg" alt="" width="96" align="right">
+
 # Later
 
 One-off scheduled actions for Home Assistant: "turn off the heater at 20:00", "turn this off in 30 minutes". A schedule runs once, then deletes itself. There is no repeat, no pause and no "what now?" after it runs.
@@ -41,9 +43,13 @@ entity: switch.heater # optional, preselected when you schedule something
 | `title`  | `Later` | Card title.                                                |
 | `entity` |         | Entity preselected in the form. Editable in the UI editor. |
 
-The card lists pending schedules, soonest first: due time (`20:00`, `tomorrow 07:00`), how long until then (`in 25 min`), name, target and action. ✕ cancels a schedule without running it.
+The card lists pending schedules, soonest first: due time (`20:00`, `tomorrow 07:00`), how long until then (`in 25 min`), name, target and action. Times are in the Home Assistant time zone, on your 12- or 24-hour setting. ✕ cancels a schedule without running it.
 
-\+ opens the form: pick an entity, an action (turn on, turn off, toggle, or any service with data), when (15, 30 or 60 minutes, another number of minutes, or a clock time), optionally a name, then **Schedule**. An empty list shows a button for the same form.
+\+ opens a dialog: pick an entity, an action (turn on, turn off, toggle, or any service with data), when (in 15, 30 or 60 minutes, another number of minutes, or any date and time), optionally a name, then **Schedule**. An empty list shows a button for the same dialog.
+
+Click a schedule to edit it in the same dialog. **Save** keeps its id; a schedule with the default name is renamed to match the change, a name you picked stays.
+
+The card speaks your Home Assistant language: Catalan, Czech, Danish, Dutch, English, Finnish, French, German, Hindi, Italian, Polish, Portuguese (Portugal and Brazil), Russian, Slovak, Spanish, Swedish and Ukrainian; anything else falls back to English. The integration's setup, services and errors are translated into the same languages. Default schedule names (`Heater: turn off at 20:00`) stay English.
 
 Without the integration the card says so and links to HACS. If the integration is installed but not added, it says that instead.
 
@@ -126,7 +132,7 @@ source: service # or card
 
 ## Websocket API
 
-`later/list`, `later/add` (fields of `later.add`), `later/cancel` (`schedule_id`) and `later/subscribe`, which sends `{type: "list", schedules}` at once and then `{type, schedule, schedules}` after every change, with `type` one of `created`, `cancelled`, `ran`, `late_ran`, `failed`.
+`later/list`, `later/add` (fields of `later.add`), `later/update` (`schedule_id` and the fields of `later.add`; replaces the schedule's action, due time and name), `later/cancel` (`schedule_id`) and `later/subscribe`, which sends `{type: "list", schedules}` at once and then `{type, schedule, schedules}` after every change, with `type` one of `created`, `updated`, `cancelled`, `ran`, `late_ran`, `failed`.
 
 ## Contributing
 
