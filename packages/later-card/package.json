@@ -33,8 +33,9 @@
     "build:integration": "RELEASE_BUILD=true vp build && cp dist/later-card.js ../../custom_components/later/www/later-card.js",
     "dev": "vp build --watch",
     "typecheck": "tsc --noEmit",
-    "test": "vp test run --coverage",
-    "test:watch": "vp test"
+    "test": "vp test run --coverage && vp test run --config vitest.browser.config.ts --project dom",
+    "test:watch": "vp test",
+    "test:visual": "vp test run --config vitest.browser.config.ts --project visual"
   },
   "dependencies": {
     "@later/shared": "workspace:*",

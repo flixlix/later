@@ -73,7 +73,7 @@ export default defineConfig({
     },
     overrides: [
       {
-        files: ["**/*.test.ts", "**/*.test.js", "packages/shared/src/testing/**"],
+        files: ["**/*.test.ts", "**/*.test.js", "packages/*/src/testing/**"],
         rules: {
           "typescript/no-non-null-assertion": "off",
           "typescript/no-unsafe-member-access": "off",
@@ -89,7 +89,7 @@ export default defineConfig({
       {
         // Shipped in the card bundle, which targets older browsers than apps/web.
         files: ["packages/shared/src/**", "packages/later-card/src/**"],
-        excludeFiles: ["**/*.test.ts", "packages/shared/src/testing/**"],
+        excludeFiles: ["**/*.test.ts", "packages/*/src/testing/**"],
         rules: { "later/no-unsupported-runtime-apis": "error" },
       },
       {
