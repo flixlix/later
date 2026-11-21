@@ -10,7 +10,8 @@ STORAGE_VERSION: Final = 1
 
 # Entities need a moment after Home Assistant has started before schedules act on them.
 STARTUP_DELAY: Final = timedelta(seconds=10)
-# A run more than this long after the due time is logged as late.
+# A timer that fires more than this long after the due time is logged as late;
+# schedules missed while Home Assistant was down are always late.
 LATE_AFTER: Final = timedelta(minutes=1)
 
 CARD_URL: Final = "/later/later-card.js"

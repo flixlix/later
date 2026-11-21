@@ -79,7 +79,7 @@ class Schedules:
             else:
                 missed.append(schedule["id"])
         for schedule_id in missed:
-            await self._async_run(schedule_id)
+            await self._async_run(schedule_id, missed=True)
 
     @callback
     def async_stop(self) -> None:
@@ -172,10 +172,11 @@ class Schedules:
         if cancel := self._timers.pop(schedule_id, None):
             cancel()
 
-    async def _async_run(self, schedule_id: str) -> None:
+    async def _async_run(self, schedule_id: str, *, missed: bool = False) -> None:
         """Delete the schedule, then call its action once.
 
         Deleting first means an action that restarts Home Assistant cannot run again.
+        `missed`: due while Home Assistant was down, so late however little.
         """
         self._disarm(schedule_id)
         schedule = await self._store.async_delete(schedule_id)
@@ -183,7 +184,7 @@ class Schedules:
             return
         due = dt_util.parse_datetime(schedule["run_at"], raise_on_error=True)
         ran_at = dt_util.utcnow()
-        late = ran_at - due > LATE_AFTER
+        late = missed or ran_at - due > LATE_AFTER
         if late:
             _LOGGER.warning(
                 "Schedule %s (%s) was due at %s and runs late at %s",

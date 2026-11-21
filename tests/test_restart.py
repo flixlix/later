@@ -126,3 +126,16 @@ async def test_missed_schedule_runs_once_late_after_startup(
     assert ran[0].data["late"] is True
     assert "Schedule a1b2c3d4 (Heater off) was due at" in caplog.text
     assert "runs late" in caplog.text
+
+
+async def test_missed_by_seconds_is_still_late(
+    hass: HomeAssistant, setup_later: Setup, hass_storage: dict[str, Any]
+) -> None:
+    """Due shortly before startup: still a missed run, so it is logged as late."""
+    write_storage(hass_storage, stored_schedule(NOW - timedelta(seconds=5)))
+    async_mock_service(hass, "switch", "turn_off")
+    ran = async_capture_events(hass, EVENT_RAN)
+
+    await setup_later()
+
+    assert [event.data["late"] for event in ran] == [True]
