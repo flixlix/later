@@ -71,13 +71,101 @@ class HaStateIcon extends LitElement {
   `;
 }
 
+/** `ha-button`: Home Assistant's webawesome button, with the looks of its `appearance`s. */
+class HaButton extends LitElement {
+  @property({ reflect: true }) appearance: "accent" | "filled" | "plain" = "accent";
+  @property({ type: Boolean }) loading = false;
+
+  render() {
+    return html`<button type="button" ?disabled=${this.loading}><slot></slot></button>`;
+  }
+
+  static styles = css`
+    :host {
+      display: inline-flex;
+    }
+    button {
+      font: inherit;
+      font-size: var(--ha-font-size-m, 14px);
+      font-weight: var(--ha-font-weight-medium, 500);
+      height: 40px;
+      padding: 0 16px;
+      border: none;
+      border-radius: var(--ha-border-radius-pill, 9999px);
+      cursor: pointer;
+      background: var(--ha-color-fill-primary-loud-resting);
+      color: var(--ha-color-on-primary-loud);
+    }
+    :host([appearance="filled"]) button {
+      background: var(--ha-color-fill-primary-normal-resting);
+      color: var(--ha-color-on-primary-normal);
+    }
+    :host([appearance="plain"]) button {
+      background: none;
+      color: var(--ha-color-on-primary-normal);
+    }
+  `;
+}
+
+/** `ha-filter-chip`: a Material filter chip that toggles `selected` itself when clicked. */
+class HaFilterChip extends LitElement {
+  @property() label = "";
+  @property({ type: Boolean, reflect: true }) selected = false;
+
+  render() {
+    return html`<button type="button" aria-pressed=${this.selected} @click=${this._toggle}>
+      ${this.label}
+    </button>`;
+  }
+
+  private _toggle = () => {
+    this.selected = !this.selected;
+  };
+
+  static styles = css`
+    button {
+      font: inherit;
+      font-size: var(--ha-font-size-m, 14px);
+      font-weight: var(--ha-font-weight-medium, 500);
+      height: 32px;
+      padding: 0 16px;
+      border: 1px solid var(--outline-color, #ccc);
+      border-radius: 8px;
+      background: none;
+      color: var(--primary-text-color);
+      cursor: pointer;
+    }
+    :host([selected]) button {
+      border-color: transparent;
+      background: rgba(var(--rgb-primary-color, 3, 169, 244), 0.15);
+    }
+  `;
+}
+
+class HaChipSet extends LitElement {
+  render() {
+    return html`<slot></slot>`;
+  }
+
+  static styles = css`
+    :host {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+  `;
+}
+
 const elements: [tag: string, element: CustomElementConstructor][] = [
   ["ha-card", HaCard],
   ["ha-svg-icon", HaSvgIcon],
   ["ha-state-icon", HaStateIcon],
+  ["ha-button", HaButton],
+  ["ha-filter-chip", HaFilterChip],
+  ["ha-chip-set", HaChipSet],
 ];
 
-/** `ha-card`, `ha-svg-icon` and a stand-in `ha-state-icon`; other `ha-*` tags stay unknown. */
+/** `ha-card`, `ha-svg-icon` and stand-ins for `ha-state-icon`, `ha-button` and the chips; other `ha-*` tags stay unknown. */
 export const defineHaElements = (): void => {
   for (const [tag, element] of elements) {
     if (!customElements.get(tag)) {
