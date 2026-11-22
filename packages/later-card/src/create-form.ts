@@ -1,6 +1,7 @@
 import { type HomeAssistant } from "custom-card-helpers";
 import { LitElement, css, html, nothing, type TemplateResult } from "lit";
 import { property, state } from "lit/decorators.js";
+import { live } from "lit/directives/live.js";
 import { type Localize, localizer } from "./localize";
 import { addRequest, type Draft, draftOf, shortcutLabel, shortcutsFor, type When } from "./request";
 import {
@@ -100,7 +101,7 @@ export class LaterCreateForm extends LitElement {
         ${this._draft.action === "service" ? this._serviceFields() : nothing}
         <div class="section">
           <span class="label" id="when-label">${t("form.when")}</span>
-          <div class="group" role="group" aria-labelledby="when-label">${this._whenChips()}</div>
+          <ha-chip-set role="group" aria-labelledby="when-label">${this._whenChips()}</ha-chip-set>
         </div>
         ${this._whenField()}
         ${this._field("name", { text: {} }, { name: this._draft.name ?? "" }, (v) =>
@@ -108,10 +109,10 @@ export class LaterCreateForm extends LitElement {
         )}
         ${this._error ? html`<p class="error" role="alert">${this._error}</p>` : nothing}
         <div class="actions">
-          <button class="text" type="button" @click=${this._cancel}>${t("form.cancel")}</button>
-          <button class="primary" type="button" ?disabled=${this._busy} @click=${this._confirm}>
+          <ha-button appearance="plain" @click=${this._cancel}>${t("form.cancel")}</ha-button>
+          <ha-button class="confirm" .loading=${this._busy} @click=${this._confirm}>
             ${t(this.schedule ? "form.save" : "form.schedule")}
-          </button>
+          </ha-button>
         </div>
       </div>
     `;
@@ -133,15 +134,21 @@ export class LaterCreateForm extends LitElement {
     ></ha-form>`;
   }
 
-  private _chip(
-    label: string,
-    pressed: boolean,
-    onClick: () => void,
-    name: string,
-    kind: "chip" | "segment" = "chip"
-  ) {
+  /** One of the "When" choices, a Home Assistant filter chip. */
+  private _chip(label: string, selected: boolean, onClick: () => void, name: string) {
+    // live: the chip toggles itself on click; re-apply ours even when it did not change.
+    return html`<ha-filter-chip
+      data-chip=${name}
+      .label=${label}
+      .selected=${live(selected)}
+      @click=${onClick}
+    ></ha-filter-chip>`;
+  }
+
+  /** One option of the action's segmented control. */
+  private _segment(label: string, pressed: boolean, onClick: () => void, name: string) {
     return html`<button
-      class=${kind}
+      class="segment"
       type="button"
       data-chip=${name}
       aria-pressed=${pressed ? "true" : "false"}
@@ -154,20 +161,18 @@ export class LaterCreateForm extends LitElement {
   private _actionChips() {
     const shortcuts = shortcutsFor(this._draft.entity, this.hass.services);
     return html`${shortcuts.map((shortcut) =>
-      this._chip(
+      this._segment(
         shortcutLabel(shortcut, this._localize),
         this._draft.action === shortcut,
         () => this._update({ action: shortcut }),
-        shortcut,
-        "segment"
+        shortcut
       )
     )}
-    ${this._chip(
+    ${this._segment(
       this._localize(shortcuts.length ? "form.other_service" : "form.service"),
       this._draft.action === "service",
       () => this._update({ action: "service" }),
-      "service",
-      "segment"
+      "service"
     )}`;
   }
 
@@ -340,11 +345,6 @@ export class LaterCreateForm extends LitElement {
       font-size: var(--ha-font-size-s, 12px);
       font-weight: var(--ha-font-weight-medium, 500);
     }
-    .group {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
     .segmented {
       display: flex;
       border: 1px solid var(--divider-color, #e0e0e0);
@@ -373,20 +373,6 @@ export class LaterCreateForm extends LitElement {
       font: inherit;
       cursor: pointer;
     }
-    .chip {
-      border: 1px solid var(--divider-color, #e0e0e0);
-      border-radius: 16px;
-      background: none;
-      color: var(--primary-text-color);
-      padding: 6px 12px;
-      font-size: var(--ha-font-size-s, 12px);
-      font-weight: var(--ha-font-weight-medium, 500);
-    }
-    .chip[aria-pressed="true"] {
-      background: var(--primary-color);
-      border-color: var(--primary-color);
-      color: var(--text-primary-color, #fff);
-    }
     .hint {
       margin: -4px 0 0;
       color: var(--secondary-text-color);
@@ -400,25 +386,6 @@ export class LaterCreateForm extends LitElement {
       display: flex;
       justify-content: flex-end;
       gap: 8px;
-    }
-    .text,
-    .primary {
-      border: none;
-      border-radius: 18px;
-      padding: 8px 16px;
-      font-weight: var(--ha-font-weight-medium, 500);
-    }
-    .text {
-      background: none;
-      color: var(--primary-color);
-    }
-    .primary {
-      background: var(--primary-color);
-      color: var(--text-primary-color, #fff);
-    }
-    .primary[disabled] {
-      opacity: 0.5;
-      cursor: default;
     }
   `;
 }

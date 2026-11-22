@@ -145,7 +145,7 @@ describe("creating a schedule", () => {
     const { root, settle } = await mount(new FakeLater());
 
     expect(root.querySelector(".empty")?.textContent).toContain("Nothing scheduled");
-    click(root, ".empty button");
+    click(root, ".empty ha-button");
     await settle();
 
     expect(root.querySelector("later-create-form")).not.toBeNull();
@@ -154,14 +154,14 @@ describe("creating a schedule", () => {
   test("entity, turn off, in 30 minutes: sends the shortcut and closes the form", async () => {
     const later = new FakeLater();
     const { root, settle } = await mount(later);
-    click(root, ".empty button");
+    click(root, ".empty ha-button");
     await settle();
 
     pick(form(root), "entity_id", "switch.heater");
     await settle();
     click(form(root), '[data-chip="in-30"]');
     await settle();
-    click(form(root), ".primary");
+    click(form(root), ".confirm");
     await settle();
 
     expect(later.sent("later/add")).toEqual([
@@ -174,7 +174,7 @@ describe("creating a schedule", () => {
   test("opens in a dialog, not inside the card", async () => {
     const { root, settle } = await mount(new FakeLater());
 
-    click(root, ".empty button");
+    click(root, ".empty ha-button");
     await settle();
 
     expect(root.querySelector("ha-dialog later-create-form")).not.toBeNull();
@@ -184,7 +184,7 @@ describe("creating a schedule", () => {
   test("any day: picks a date and time, and says when that is", async () => {
     const later = new FakeLater();
     const { root, settle } = await mount(later, { entity: "switch.heater" });
-    click(root, ".empty button");
+    click(root, ".empty ha-button");
     await settle();
 
     click(form(root), '[data-chip="toggle"]');
@@ -203,7 +203,7 @@ describe("creating a schedule", () => {
       "Runs Tue, Nov 24 07:30, in 3 days"
     );
     pick(form(root), "name", "Morning");
-    click(form(root), ".primary");
+    click(form(root), ".confirm");
     await settle();
 
     expect(later.sent("later/add")).toEqual([
@@ -220,7 +220,7 @@ describe("creating a schedule", () => {
   test("a time already past today is refused", async () => {
     const later = new FakeLater();
     const { root, settle } = await mount(later, { entity: "switch.heater" });
-    click(root, ".empty button");
+    click(root, ".empty ha-button");
     await settle();
 
     click(form(root), '[data-chip="at"]');
@@ -228,7 +228,7 @@ describe("creating a schedule", () => {
     pick(form(root), "time", "18:30:00");
     await settle();
     expect(form(root).querySelector(".hint")?.textContent).toBe("That time has passed");
-    click(form(root), ".primary");
+    click(form(root), ".confirm");
     await settle();
 
     expect(form(root).querySelector(".error")?.textContent).toBe("Pick a time in the future");
@@ -238,7 +238,7 @@ describe("creating a schedule", () => {
   test("any service with data, and custom minutes", async () => {
     const later = new FakeLater();
     const { root, settle } = await mount(later);
-    click(root, ".empty button");
+    click(root, ".empty ha-button");
     await settle();
 
     click(form(root), '[data-chip="service"]');
@@ -249,7 +249,7 @@ describe("creating a schedule", () => {
     await settle();
     pick(form(root), "minutes", 90);
     await settle();
-    click(form(root), ".primary");
+    click(form(root), ".confirm");
     await settle();
 
     expect(later.sent("later/add")).toEqual([
@@ -265,10 +265,10 @@ describe("creating a schedule", () => {
   test("says what is missing and sends nothing", async () => {
     const later = new FakeLater();
     const { root, settle } = await mount(later, { entity: "switch.heater" });
-    click(root, ".empty button");
+    click(root, ".empty ha-button");
     await settle();
 
-    click(form(root), ".primary");
+    click(form(root), ".confirm");
     await settle();
 
     expect(form(root).querySelector(".error")?.textContent).toBe("Pick when");
@@ -279,11 +279,11 @@ describe("creating a schedule", () => {
     const later = new FakeLater();
     later.addError = { code: "invalid_format", message: "send either `at` or `in`" };
     const { root, settle } = await mount(later, { entity: "switch.heater" });
-    click(root, ".empty button");
+    click(root, ".empty ha-button");
     await settle();
 
     click(form(root), '[data-chip="in-15"]');
-    click(form(root), ".primary");
+    click(form(root), ".confirm");
     await settle();
 
     expect(form(root).querySelector(".error")?.textContent).toBe("send either `at` or `in`");
@@ -303,12 +303,12 @@ describe("editing a schedule", () => {
       "true"
     );
     expect(form(root).querySelector(".hint")?.textContent).toBe("Runs today 19:25, in 25 min");
-    expect(form(root).querySelector(".primary")?.textContent?.trim()).toBe("Save");
+    expect(form(root).querySelector(".confirm")?.textContent?.trim()).toBe("Save");
 
     click(form(root), '[data-chip="turn_on"]');
     pick(form(root), "date", "2026-11-22");
     await settle();
-    click(form(root), ".primary");
+    click(form(root), ".confirm");
     await settle();
 
     // The name is unchanged, so it is not sent: the integration renames a default name itself.
@@ -353,8 +353,10 @@ describe("in the user's language", () => {
     expect(form(root).querySelector('[data-chip="turn_on"]')?.textContent?.trim()).toBe(
       "Einschalten"
     );
-    expect(form(root).querySelector('[data-chip="in-60"]')?.textContent?.trim()).toBe("In 1 Std.");
-    click(form(root), ".primary");
+    expect(
+      form(root).querySelector<HTMLElement & { label: string }>('[data-chip="in-60"]')?.label
+    ).toBe("In 1 Std.");
+    click(form(root), ".confirm");
     await settle();
 
     expect(form(root).querySelector(".error")?.textContent).toBe("Wähle einen Zeitpunkt");

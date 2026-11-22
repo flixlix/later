@@ -74,7 +74,7 @@ test("create form with a clock time", async () => {
     { type: "custom:later-card", entity: "switch.heater" },
     hassWith(new FakeLater())
   );
-  root.querySelector<HTMLElement>(".empty button")?.click();
+  root.querySelector<HTMLElement>(".empty ha-button")?.click();
   await settle();
   root
     .querySelector("later-create-form")

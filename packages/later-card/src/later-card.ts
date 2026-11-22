@@ -227,9 +227,9 @@ export class LaterCard extends LitElement implements LovelaceCard {
     return html`<div class="empty">
       <ha-svg-icon .path=${mdiTimerOutline}></ha-svg-icon>
       <p>${this._localize("card.nothing_scheduled")}</p>
-      <button class="primary" type="button" @click=${() => this._openForm()}>
+      <ha-button appearance="filled" @click=${() => this._openForm()}>
         ${this._localize("card.schedule_action")}
-      </button>
+      </ha-button>
     </div>`;
   }
 
@@ -367,14 +367,6 @@ export class LaterCard extends LitElement implements LovelaceCard {
     }
     .icon:hover {
       background: var(--secondary-background-color, rgba(0, 0, 0, 0.06));
-    }
-    .primary {
-      border: none;
-      border-radius: 18px;
-      padding: 8px 16px;
-      background: var(--primary-color);
-      color: var(--text-primary-color, #fff);
-      font-weight: var(--ha-font-weight-medium, 500);
     }
     .muted,
     .secondary {
