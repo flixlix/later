@@ -86,7 +86,7 @@ Home Assistant loads the card from `custom_components/later/www/later-card.js`, 
 pnpm build:integration
 ```
 
-and commit the result. CI rebuilds it and fails if the committed file differs.
+and commit the result. The pre-commit hook and CI rebuild it and fail if the committed file differs; the hook only runs when the commit touches the card, its shared code, the bundler or the lockfile.
 
 ## Releasing
 
