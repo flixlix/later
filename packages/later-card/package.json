@@ -16,7 +16,8 @@
   "main": "./dist/later-card.js",
   "exports": {
     ".": "./dist/later-card.js",
-    "./source": "./src/later-card.ts"
+    "./source": "./src/later-card.ts",
+    "./testing/*": "./src/testing/*.ts"
   },
   "repository": {
     "type": "git",

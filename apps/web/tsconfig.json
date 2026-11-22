@@ -12,6 +12,8 @@
     "allowImportingTsExtensions": true,
     "verbatimModuleSyntax": true,
     "noEmit": true,
+    "experimentalDecorators": true,
+    "useDefineForClassFields": false,
     "declaration": false,
     "declarationMap": false,
     "noUnusedLocals": true,
