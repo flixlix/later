@@ -1,118 +1,94 @@
 import { useEffect, useRef, useState } from "react";
 
+import {
+  DEMO_ENTITIES,
+  DEMO_SERVICES,
+  InvalidRequest,
+  scheduleFields,
+} from "../lib/demo-integration";
 import { useScheme } from "../lib/theme";
 import { cx } from "./docs";
-
-export type LiveCardConfig = { type: "custom:later-card"; title?: string; entity?: string };
-
-/** The entities the demo dashboard has; examples target these. */
-const STATES: Record<string, { state: string; attributes: { friendly_name: string } }> = {
-  "switch.heater": { state: "on", attributes: { friendly_name: "Heater" } },
-  "light.desk_lamp": { state: "on", attributes: { friendly_name: "Desk lamp" } },
-  "switch.pump": { state: "on", attributes: { friendly_name: "Pump" } },
-  "climate.office": { state: "heat", attributes: { friendly_name: "Office" } },
-};
-
-const SHORTCUT_LABELS: Record<string, string> = {
-  turn_on: "turn on",
-  turn_off: "turn off",
-  toggle: "toggle",
-};
-
-type Request = { type: string; [field: string]: unknown };
-
-const isRecord = (value: unknown): value is Record<string, unknown> =>
-  typeof value === "object" && value !== null && !Array.isArray(value);
-
-const text = (value: unknown) => (typeof value === "string" && value ? value : undefined);
-
-/**
- * The schedule fields a `later/add` or `later/update` asks for, named as the integration names
- * them. The demo's Home Assistant runs in the visitor's time zone, so `at` reads as local time.
- */
-function requestedFields(request: Request, now: Date) {
-  const entity = text(request.entity_id) ?? null;
-  const action = text(request.action);
-  const service = text(request.service) ?? `${entity?.split(".")[0]}.${action}`;
-  const runAt =
-    typeof request.in === "number"
-      ? new Date(now.getTime() + request.in * 60_000)
-      : new Date(String(request.at).replace(" ", "T"));
-  const target = (entity && STATES[entity]?.attributes.friendly_name) ?? service;
-  const what = (action && SHORTCUT_LABELS[action]) ?? service;
-  return {
-    name: text(request.name) ?? `${target}: ${what}`,
-    service,
-    entity_id: entity,
-    data: isRecord(request.data) ? request.data : {},
-    run_at: runAt.toISOString(),
-  };
-}
 
 const byDueTime = (a: { run_at: string }, b: { run_at: string }) =>
   a.run_at.localeCompare(b.run_at);
 
+export type LiveCardConfig = { type: "custom:later-card"; title?: string; entity?: string };
+
 // Lit and the card only run in the browser; load them after hydration.
 const loadCard = () =>
   Promise.all([
+    import("../lib/ha-stand-ins"),
     import("@later/shared/testing/ha-elements"),
     import("@later/shared/testing/fake-hass"),
     import("later-card/testing/fake-later"),
     import("later-card/source"),
-  ]).then(([elements, { fakeHass }, { FakeLater, schedule }, { LaterCard }]) => {
+  ]).then(([standIns, elements, { fakeHass }, { FakeLater, schedule }, { LaterCard }]) => {
+    standIns.defineDocsHaElements();
     elements.defineHaElements();
 
-    /** The integration in memory: schedules are due when `later/add` and `later/update` say. */
+    /** The Later integration in memory: validates, names and orders schedules as it does. */
     class DemoLater extends FakeLater {
-      call(message: Request) {
+      call(message: Parameters<InstanceType<typeof FakeLater>["call"]>[0]) {
         if (message.type !== "later/add" && message.type !== "later/update") {
           return super.call(message);
         }
-        const now = new Date();
-        const fields = requestedFields(message, now);
-        if (message.type === "later/update") {
-          const old = this.schedules.find((s) => s.id === message.schedule_id);
-          if (!old) {
-            return Promise.reject({ code: "not_found", message: "No pending schedule" });
-          }
-          const updated = { ...old, ...fields };
-          this.schedules = this.schedules.map((s) => (s === old ? updated : s)).toSorted(byDueTime);
-          this.emit({ type: "updated", schedule: updated, schedules: this.schedules });
-          return Promise.resolve(updated);
+        const { type, schedule_id: scheduleId, ...request } = message;
+        const old = this.schedules.find((s) => s.id === scheduleId);
+        if (type === "later/update" && !old) {
+          return Promise.reject({
+            code: "not_found",
+            message: `No pending schedule with id ${String(scheduleId)}.`,
+          });
         }
-        const created = { ...schedule({ now }), ...fields };
-        this.schedules = [...this.schedules, created].toSorted(byDueTime);
-        this.emit({ type: "created", schedule: created, schedules: this.schedules });
-        return Promise.resolve(created);
+        try {
+          const now = new Date();
+          const fields = scheduleFields(request, now, old);
+          const saved = old
+            ? { ...old, ...fields }
+            : { ...schedule({ now }), ...fields, source: "card" as const };
+          this.schedules = [...this.schedules.filter((s) => s !== old), saved].toSorted(byDueTime);
+          this.emit({
+            type: old ? "updated" : "created",
+            schedule: saved,
+            schedules: this.schedules,
+          });
+          return Promise.resolve(saved);
+        } catch (error) {
+          return Promise.reject(
+            error instanceof InvalidRequest ? { code: error.code, message: error.message } : error
+          );
+        }
       }
     }
 
+    /** A schedule due `minutes` from now, as `later.add` with these fields would make it. */
+    const pending = (request: Record<string, unknown>, minutes: number, now: Date) => ({
+      ...schedule({ now }),
+      ...scheduleFields({ ...request, in: minutes }, now),
+    });
+
     return (config: LiveCardConfig) => {
       const now = new Date();
-      const later = new DemoLater([
-        schedule({ name: "Heater: turn off", minutes: 25, now }),
-        schedule({
-          name: "Office: set temperature",
-          service: "climate.set_temperature",
-          entity_id: "climate.office",
-          minutes: 120,
-          now,
-        }),
-        schedule({
-          name: "Holiday lights",
-          service: "script.turn_on",
-          entity_id: null,
-          minutes: 60 * 13,
-          now,
-        }),
-      ]);
+      const later = new DemoLater(
+        [
+          pending({ entity_id: "switch.heater", action: "turn_off" }, 25, now),
+          pending({ entity_id: "light.living_room", action: "turn_off" }, 90, now),
+          pending(
+            {
+              entity_id: "climate.office",
+              service: "climate.set_temperature",
+              data: { temperature: 17 },
+            },
+            150,
+            now
+          ),
+          pending({ service: "script.holiday_lights", name: "Holiday lights" }, 60 * 13, now),
+        ].toSorted(byDueTime)
+      );
       const hass = fakeHass({
         websocket: later,
-        states: STATES,
-        services: {
-          switch: ["turn_on", "turn_off", "toggle"],
-          light: ["turn_on", "turn_off", "toggle"],
-        },
+        states: DEMO_ENTITIES,
+        services: DEMO_SERVICES,
         timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
       });
       const card = new LaterCard();
@@ -124,7 +100,7 @@ const loadCard = () =>
 
 /**
  * The real Later card on a Home Assistant dashboard background, talking to an in-memory
- * integration: cancel, schedule and edit all work, nothing leaves the page.
+ * integration: schedule, edit and cancel all work, nothing leaves the page.
  */
 export function LiveCard({ config, className }: { config: LiveCardConfig; className?: string }) {
   const host = useRef<HTMLDivElement>(null);

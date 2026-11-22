@@ -1,7 +1,15 @@
 {
   "extends": "@later/typescript-config/base.json",
   "include": ["**/*.ts", "**/*.tsx"],
-  "exclude": ["node_modules", "dist", ".output", ".nitro", ".tanstack", ".vercel"],
+  "exclude": [
+    "vitest.config.ts",
+    "node_modules",
+    "dist",
+    ".output",
+    ".nitro",
+    ".tanstack",
+    ".vercel"
+  ],
   "compilerOptions": {
     "target": "ES2022",
     "jsx": "react-jsx",

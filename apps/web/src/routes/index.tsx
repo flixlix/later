@@ -100,7 +100,7 @@ function Home() {
       <Section
         id="try-it"
         title="Try it"
-        description="The card above is the real one, against an in-memory Later: cancel a schedule with ✕, or press + and schedule the heater. Nothing leaves this page."
+        description="The card above is the real one, against an in-memory Later and a dozen dummy devices: press + to schedule something, click a schedule to edit it, ✕ to cancel it. Nothing leaves this page."
       >
         <div className="grid gap-4 md:grid-cols-2">
           <div>
