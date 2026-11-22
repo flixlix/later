@@ -4,7 +4,8 @@ import { readFileSync, writeFileSync } from "node:fs";
 
 const MANIFEST = "custom_components/later/manifest.json";
 const { version } = JSON.parse(readFileSync("packages/later-card/package.json", "utf8"));
-const manifest = JSON.parse(readFileSync(MANIFEST, "utf8"));
+const text = readFileSync(MANIFEST, "utf8");
+const manifest = JSON.parse(text);
 
 if (manifest.version === version) {
   process.exit(0);
@@ -15,4 +16,8 @@ if (process.argv.includes("--check")) {
   );
   process.exit(1);
 }
-writeFileSync(MANIFEST, `${JSON.stringify({ ...manifest, version }, null, 2)}\n`);
+// Only the version line changes, so the file keeps the formatter's layout.
+writeFileSync(
+  MANIFEST,
+  text.replace(`"version": "${manifest.version}"`, `"version": "${version}"`)
+);

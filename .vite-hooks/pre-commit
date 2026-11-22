@@ -1,3 +1,27 @@
 if git diff --cached --name-only --diff-filter=ACMR | grep -q '^\.changeset/.*\.md$'; then
   pnpm check:changesets
 fi
+
+# The bundled card must be the release build of the staged card source, as CI checks.
+# Skipped unless the commit touches what the bundle is built from, or the bundle itself.
+BUNDLE=custom_components/later/www/later-card.js
+CARD_INPUTS="packages/later-card/src packages/later-card/package.json packages/later-card/vite.config.ts packages/shared/src packages/tooling/bundler pnpm-lock.yaml"
+# shellcheck disable=SC2086
+if ! git diff --cached --quiet -- $CARD_INPUTS "$BUNDLE"; then
+  # The build reads the working tree; with unstaged card changes it would not be the commit's card.
+  # shellcheck disable=SC2086
+  if ! git diff --quiet -- $CARD_INPUTS; then
+    echo "pre-commit: stage or stash your other card changes, so the bundled card can be checked against what you commit." >&2
+    exit 1
+  fi
+  out=$(mktemp -d)
+  trap 'rm -rf "$out"' EXIT
+  (cd packages/later-card && RELEASE_BUILD=true node_modules/.bin/vp build --outDir "$out" --emptyOutDir --logLevel error 2>/dev/null) || {
+    echo "pre-commit: building the card failed; run pnpm build:integration to see why." >&2
+    exit 1
+  }
+  if ! git show ":$BUNDLE" 2>/dev/null | cmp -s - "$out/later-card.js"; then
+    echo "pre-commit: $BUNDLE does not match the card source. Run pnpm build:integration and stage it." >&2
+    exit 1
+  fi
+fi

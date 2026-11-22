@@ -95,14 +95,41 @@ class HaButton extends LitElement {
       cursor: pointer;
       background: var(--ha-color-fill-primary-loud-resting);
       color: var(--ha-color-on-primary-loud);
+      transition: background-color 150ms ease;
+    }
+    button:hover {
+      background: var(--ha-color-fill-primary-loud-hover);
+    }
+    button:active {
+      background: var(--ha-color-fill-primary-loud-active);
+    }
+    button:focus-visible {
+      outline: 2px solid var(--ha-color-focus, var(--primary-color));
+      outline-offset: 2px;
+    }
+    button:disabled {
+      cursor: progress;
+      opacity: 0.6;
     }
     :host([appearance="filled"]) button {
       background: var(--ha-color-fill-primary-normal-resting);
       color: var(--ha-color-on-primary-normal);
     }
+    :host([appearance="filled"]) button:hover {
+      background: var(--ha-color-fill-primary-normal-hover);
+    }
+    :host([appearance="filled"]) button:active {
+      background: var(--ha-color-fill-primary-normal-active);
+    }
     :host([appearance="plain"]) button {
       background: none;
       color: var(--ha-color-on-primary-normal);
+    }
+    :host([appearance="plain"]) button:hover {
+      background: var(--ha-color-fill-primary-quiet-hover);
+    }
+    :host([appearance="plain"]) button:active {
+      background: var(--ha-color-fill-primary-quiet-active);
     }
   `;
 }
@@ -134,6 +161,9 @@ class HaFilterChip extends LitElement {
       background: none;
       color: var(--primary-text-color);
       cursor: pointer;
+    }
+    button:hover {
+      background: var(--ha-color-fill-neutral-quiet-hover, rgba(0, 0, 0, 0.04));
     }
     :host([selected]) button {
       border-color: transparent;
