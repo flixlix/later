@@ -13,7 +13,7 @@ dependencies = []
 test = [
   "pytest-homeassistant-custom-component==0.13.375",
   # Needed by frontend, a dependency of later; the version that homeassistant pins.
-  "home-assistant-frontend==20260930.5",
+  "home-assistant-frontend==20261028.8",
 ]
 lint = ["ruff==0.17.6"]
 
